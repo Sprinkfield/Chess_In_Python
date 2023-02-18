@@ -9,7 +9,6 @@ import pygame
 
 
 # Global constants
-DEBUG_MODE = game_objects.GameObjects.DEBUG_MODE
 DIMENSIONS = game_objects.GameObjects.DIMENSIONS
 TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
 FONT_SIZE = game_objects.GameObjects.FONT_SIZE
@@ -18,8 +17,6 @@ B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
 BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
 SQUARE_SIZE = (B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS
 MAXIMUM_FRAMES_PER_SECOND_VALUE = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
-BACKGROUND_FONT_COLOUR = (200, 220, 250)
-FOREGROUND_FONT_COLOUR = (0, 0, 0)
 LANGUAGE_NAME = game_objects.GameObjects.LANGUAGES
 B_B_WIDTH = game_objects.SCREENSIZE[1] * 2
 
@@ -194,9 +191,6 @@ def run_game():
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
-
-            if DEBUG_MODE:
-                print(move_counter)
 
         if game_manip.checkmate:
             if game_manip.white_to_move:

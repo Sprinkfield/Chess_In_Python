@@ -1,9 +1,8 @@
-import pygame
 from game_engine import game_objects
+import pygame
 
 
 # Global constants
-DEBUG_MODE = True
 B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
 BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
 LETTER_BORDER_SIZE = int(game_objects.SCREENSIZE[1] // 36)
