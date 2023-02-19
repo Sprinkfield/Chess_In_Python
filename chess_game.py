@@ -193,7 +193,6 @@ def run_game():
                     move = ai_move
                     print("Oh, I probably made a mistake!")
 
-                print(f"{(1/(5 * 2**difficulty_level)) * 100}%")
                 game_manip.make_move(ai_move)
                 move_made = True
                 ai_is_thinking = False
