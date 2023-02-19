@@ -1,2 +1,2 @@
 # Chess_In_Python
-Chess game made with Pygame library.
+## Experience the beauty of chess with incredibly human-like AI! This game promises an unforgettable experience. Try it out for yourself now!
