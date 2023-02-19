@@ -6,6 +6,7 @@ from game_engine import pieces_moves
 from ai_engine import ai_main
 import multiprocessing
 import pygame
+import random
 
 
 # Global constants
@@ -39,6 +40,7 @@ def run_game():
     black_down_flag = False
     lang_num = 0  # English
     language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
+    difficulty_level = 1
 
     square_selected = tuple()
     player_clicks = list()
@@ -68,8 +70,11 @@ def run_game():
                             lang_num += 1
                             language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
 
+                        if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                            difficulty_level = (difficulty_level + 1) % 3
+
         # Main render
-        draw_game.DrawGame().draw_main_menu(game_screen, language)
+        draw_game.DrawGame().draw_main_menu(game_screen, language, difficulty_level)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE // 2)
 
         # Highlighting the chosen
@@ -172,7 +177,7 @@ def run_game():
             if not ai_is_thinking:
                 ai_is_thinking = True
                 return_queue = multiprocessing.Queue()
-                movement_process = multiprocessing.Process(target=ai_main.AI().find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
+                movement_process = multiprocessing.Process(target=ai_main.AI(difficulty_level).find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
                 movement_process.start()
 
             if not movement_process.is_alive():
@@ -181,7 +186,14 @@ def run_game():
                 if ai_move is None:
                     ai_move = ai_main.AI().find_random_move(valid_moves)
 
-                move = ai_move
+                if random.randint(1, 5 * 2**difficulty_level) != 1:
+                    move = ai_move
+                else:
+                    ai_move = ai_main.AI().find_random_move(valid_moves)
+                    move = ai_move
+                    print("Oh, I probably made a mistake!")
+
+                print(f"{(1/(5 * 2**difficulty_level)) * 100}%")
                 game_manip.make_move(ai_move)
                 move_made = True
                 ai_is_thinking = False

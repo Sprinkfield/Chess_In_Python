@@ -25,6 +25,9 @@ ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] // 22)
 BACKGROUND_FONT_COLOUR = (200, 220, 250)
 FOREGROUND_FONT_COLOUR = (0, 0, 0)
 LANGUAGES = game_objects.GameObjects.LANGUAGES
+LVL_EASY = pygame.transform.scale(pygame.image.load("images/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/wR.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_HARD = pygame.transform.scale(pygame.image.load("images/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
 
 class DrawGame:
@@ -36,7 +39,7 @@ class DrawGame:
         IMAGES["white_square"] = pygame.transform.scale(pygame.image.load("images/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
         IMAGES["black_square"] = pygame.transform.scale(pygame.image.load("images/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
-    def draw_main_menu(self, game_screen, language):
+    def draw_main_menu(self, game_screen, language, level):
         game_screen.blit(pygame.transform.scale(pygame.image.load("images/zmain_menu_background.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
 
         font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
@@ -74,6 +77,13 @@ class DrawGame:
 
         lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
+
+        if level == 0:
+            game_screen.blit(LVL_EASY, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+        elif level == 1:
+            game_screen.blit(LVL_MEDIUM, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+        elif level == 2:
+            game_screen.blit(LVL_HARD, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
 
     def hightlighting_possible_moves(self, screen, gs, valid_moves, square_selected) -> None:
         if square_selected != ():

@@ -7,7 +7,6 @@ import random
 # Global constants
 CHECKMATE = 1000
 STALEMATE = 0
-DEPTH = 3
 PAWN_COST_VALUE = game_objects.GameObjects.PAWN_COST_VALUE
 KNIGHT_COST_VALUE = game_objects.GameObjects.KNIGHT_COST_VALUE
 BISHOP_COST_VALUE = game_objects.GameObjects.BISHOP_COST_VALUE
@@ -36,8 +35,8 @@ piece_position_cost_value = {"wN": KNIGHT_COST_VALUE,
 
 
 class AI:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, difficulty_level=0) -> None:
+        self.DEPTH = difficulty_level + 2
 
     def opening_move(self, move_as_black=False, game_manip=None):
         if move_as_black and game_manip.board[4][3] == "wp":
@@ -68,7 +67,7 @@ class AI:
 
         next_move = None
         random.shuffle(valid_moves)
-        self.find_best_comparecent_move(move_counter, game_manip, valid_moves, DEPTH, -CHECKMATE, CHECKMATE, 1 if game_manip.white_to_move else -1)
+        self.find_best_comparecent_move(move_counter, game_manip, valid_moves, self.DEPTH, -CHECKMATE, CHECKMATE, 1 if game_manip.white_to_move else -1)
         return_queue.put(next_move)
 
     def score_board(self, game_manip) -> float:
@@ -111,7 +110,7 @@ class AI:
                 if score > max_score:
                     max_score = score
 
-                    if depth == DEPTH:
+                    if depth == self.DEPTH:
                         next_move = move
 
                 game_manip.undo_move()
