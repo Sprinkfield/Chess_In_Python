@@ -1,6 +1,7 @@
 from game_engine import chess_manip
 from game_engine import pieces_moves
 from game_engine import game_objects
+from functools import *
 import random
 
 
@@ -13,12 +14,12 @@ BISHOP_COST_VALUE = game_objects.GameObjects.BISHOP_COST_VALUE
 ROOK_COST_VALUE = game_objects.GameObjects.ROOK_COST_VALUE
 QUEEN_COST_VALUE = game_objects.GameObjects.QUEEN_COST_VALUE
 
-piece_value_cost = {"K": 0, 
+piece_value_cost = {"K": 100,
                     "p": 1,
-                    "N": 3, 
-                    "B": 3.5, 
-                    "R": 5, 
-                    "Q": 9, 
+                    "N": 3,
+                    "B": 3.5,
+                    "R": 5,
+                    "Q": 9,
                     }
 
 piece_position_cost_value = {"wN": KNIGHT_COST_VALUE,
@@ -120,7 +121,7 @@ class AI:
 
                 if alpha >= beta:
                     break
-
+        
         return max_score
 
     def find_random_move(self, valid_moves):
