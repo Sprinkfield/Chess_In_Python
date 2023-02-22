@@ -19,6 +19,7 @@ BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
 SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
 MAXIMUM_FRAMES_PER_SECOND_VALUE = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 LANGUAGE_NAME = game_objects.GameObjects.LANGUAGES
+THEMES_PACK = game_objects.GameObjects.THEMES_PACK
 B_B_WIDTH = game_objects.SCREENSIZE[1] * 2
 
 
@@ -41,6 +42,7 @@ def run_game():
     lang_num = 0  # English
     language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
     difficulty_level = 1
+    theme_num = 0
 
     square_selected = tuple()
     player_clicks = list()
@@ -127,10 +129,10 @@ def run_game():
         the_second_player = True
         move_as_black = False
 
-    game_screen.blit(pygame.transform.scale(pygame.image.load("images/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
+    game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
 
     while game_running_state:
-        draw_game.DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, is_black_down=black_down_flag)
+        draw_game.DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, theme_num)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
         is_now_human_turn = (game_manip.white_to_move and the_first_player) or (not game_manip.white_to_move and the_second_player)
@@ -198,7 +200,7 @@ def run_game():
                 ai_is_thinking = False
 
         if move_made:
-            draw_game.DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer)
+            draw_game.DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, theme_num)
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1

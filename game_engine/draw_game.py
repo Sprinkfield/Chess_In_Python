@@ -9,7 +9,7 @@ BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
 LETTER_BORDER_SIZE = int(game_objects.SCREENSIZE[1] / 36)
 LETTER_GAP_SIZE = int(game_objects.SCREENSIZE[1] / 43.2)
 SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
-MAXIMUM_FPS = 60
+MAXIMUM_FPS = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 IMAGES = dict()
 SQUARE_IMAGES = dict()
 TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
@@ -26,19 +26,20 @@ ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] / 22)
 BACKGROUND_FONT_COLOUR = (200, 220, 250)
 FOREGROUND_FONT_COLOUR = (0, 0, 0)
 LANGUAGES = game_objects.GameObjects.LANGUAGES
-LVL_EASY = pygame.transform.scale(pygame.image.load("images/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
-LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/wN.png"), (SQUARE_SIZE, SQUARE_SIZE))
-LVL_HARD = pygame.transform.scale(pygame.image.load("images/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_EASY = pygame.transform.scale(pygame.image.load("images/default/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/default/wN.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_HARD = pygame.transform.scale(pygame.image.load("images/default/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
+THEMES_PACK = game_objects.GameObjects.THEMES_PACK
 
 
 class DrawGame:
     """Class that draws GUI: main menu, game board, pieces, move animation, highlights of moves, etc."""
-    def load_images(self) -> None:
+    def load_images(self, theme_num) -> None:
         for piece in game_objects.GameObjects.names_of_pieces:
-            IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
+            IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         
-        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load("images/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load("images/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_main_menu(self, game_screen, language, level) -> None:
         game_screen.blit(pygame.transform.scale(pygame.image.load("images/zmain_menu_background.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
@@ -121,10 +122,10 @@ class DrawGame:
         game_screen.blit(square, (BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE))
         game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
 
-    def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False) -> None:
-        self.draw_game(game_screen)
+    def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False, theme_num=0) -> None:
+        self.draw_game(game_screen, theme_num)
         self.hightlighting_possible_moves(game_screen, game_manip, valid_moves, square_selected)
-        self.draw_pieces(game_screen, game_manip.board)
+        self.draw_pieces(game_screen, game_manip.board, theme_num)
 
         # Drawing letters and numbers.
         if is_black_down:
@@ -168,8 +169,8 @@ class DrawGame:
                 text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
                 game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
 
-    def draw_game(self, screen) -> None:
-        self.load_images()
+    def draw_game(self, screen, theme_num) -> None:
+        self.load_images(theme_num)
         white_colour = False
 
         for row in range(DIMENSIONS):
@@ -190,8 +191,8 @@ class DrawGame:
         text_object = font_type.render(text_line, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-    def draw_pieces(self, game_screen, board) -> None:
-        self.load_images()
+    def draw_pieces(self, game_screen, board, theme_num) -> None:
+        self.load_images(theme_num)
 
         for row in range(DIMENSIONS):
             for col in range(DIMENSIONS):
@@ -199,7 +200,7 @@ class DrawGame:
                 if piece != "--":
                     game_screen.blit(IMAGES[piece], pygame.Rect(BORDER_SIZE + col*SQUARE_SIZE, BORDER_SIZE + row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-    def animate_move(self, move, screen, board, clock) -> None:
+    def animate_move(self, move, screen, board, clock, theme_num) -> None:
         move_row = move.end_row - move.start_row
         move_col = move.end_col - move.start_col
         frames_per_second = ANIMATION_SPEED
@@ -207,8 +208,8 @@ class DrawGame:
         square_colour = ["white_square", "black_square"][(move.end_row + move.end_col) % 2]
 
         for frame in range(frame_count + 1):
-            self.draw_game(screen)
-            self.draw_pieces(screen, board)
+            self.draw_game(screen, theme_num)
+            self.draw_pieces(screen, board, theme_num)
             row, col = (move.start_row + move_row * frame / frame_count, move.start_col + move_col * frame / frame_count)
             end_square = pygame.Rect(BORDER_SIZE + move.end_col * SQUARE_SIZE, BORDER_SIZE + move.end_row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)
             screen.blit(IMAGES[square_colour], pygame.Rect(BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))

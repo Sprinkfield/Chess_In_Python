@@ -23,11 +23,12 @@ class GameObjects:
     DIMENSIONS = 8
     SQUARE_SIZE = (B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS
     ALPHABET = "ABCDEFGH"
-    MAXIMUM_FRAMES_PER_SECOND_VALUE = 30
+    MAXIMUM_FRAMES_PER_SECOND_VALUE = 60
     TOP_IN_MAIN_MENU = SCREENSIZE[1] // 3
     FONT_SIZE = SCREENSIZE[1] // 18
     GAP_IN_MAIN_MENU = FONT_SIZE * 2
     LANGUAGES = ["eng", "rus", "ger", "fra"]
+    THEMES_PACK = ["default", "pixel"]
 
     white_board = [["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
                    ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
