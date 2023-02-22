@@ -14,7 +14,7 @@ class GameObjects:
     else:
         ### For Linux ###
         output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
-        SCREENSIZE = list(map(int, output.split()[0].split(b'x')))
+        SCREENSIZE = tuple(map(int, output.split()[0].split(b'x')))
 
     # Constants
     DEBUG_MODE = False

@@ -26,7 +26,7 @@ BACKGROUND_FONT_COLOUR = (200, 220, 250)
 FOREGROUND_FONT_COLOUR = (0, 0, 0)
 LANGUAGES = game_objects.GameObjects.LANGUAGES
 LVL_EASY = pygame.transform.scale(pygame.image.load("images/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
-LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/wR.png"), (SQUARE_SIZE, SQUARE_SIZE))
+LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/wN.png"), (SQUARE_SIZE, SQUARE_SIZE))
 LVL_HARD = pygame.transform.scale(pygame.image.load("images/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
 

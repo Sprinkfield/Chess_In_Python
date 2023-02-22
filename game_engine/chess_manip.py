@@ -30,7 +30,7 @@ class LangSettings:
             self.b_win = "Мат! Черные выиграли"
             self.stale = "Пат! Ничья"
             # Main menu.
-            self.main = "Главное меню"
+            self.main = "Главное Меню"
             self.p_white = "Играть за белых"
             self.p_black = "Играть за черных"
             self.p_vs_f = "Играть против друга"
@@ -52,7 +52,7 @@ class LangSettings:
             self.b_win = "Échec et mat ! Les noirs ont gagné"
             self.stale = "Impasse ! Tirage au sort"
             # Main menu.
-            self.main = "Menu principal"
+            self.main = "Menu Principal"
             self.p_white = "Jouer en blanc"
             self.p_black = "Jouer en noir"
             self.p_vs_f = "Jouer contre un ami"
