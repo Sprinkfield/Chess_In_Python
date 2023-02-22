@@ -192,7 +192,6 @@ def run_game():
                     ai_move = ai_main.AI().find_random_move(valid_moves)
                     move = ai_move
                     print("Oh, I probably made a mistake!")
-
                 game_manip.make_move(ai_move)
                 move_made = True
                 ai_is_thinking = False
