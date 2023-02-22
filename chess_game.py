@@ -10,13 +10,13 @@ import random
 
 
 # Global constants
-DIMENSIONS = game_objects.GameObjects.DIMENSIONS
 TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
+DEBUG_MODE = game_objects.GameObjects.DEBUG_MODE
 FONT_SIZE = game_objects.GameObjects.FONT_SIZE
 GAP_IN_MAIN_MENU = game_objects.GameObjects.GAP_IN_MAIN_MENU
 B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
 BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
-SQUARE_SIZE = (B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS
+SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
 MAXIMUM_FRAMES_PER_SECOND_VALUE = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 LANGUAGE_NAME = game_objects.GameObjects.LANGUAGES
 B_B_WIDTH = game_objects.SCREENSIZE[1] * 2
@@ -33,7 +33,7 @@ def run_game():
     game_screen = pygame.display.set_mode((B_WIDTH, B_HEIGHT))
     pygame.display.set_caption("Chess")
     game_timer = pygame.time.Clock()
-    move_made = False  # Flag for the completed movement
+    move_made = False  # Flag for the completed movement.
     side_choice = False
     move_counter = 0
     move_as_black = False
@@ -55,7 +55,7 @@ def run_game():
             # Mouse movement processing.
             elif single_event.type == pygame.MOUSEBUTTONDOWN:
                     if BORDER_SIZE < location[1] < B_HEIGHT:
-                        position_choice = (location[1])  # Y coordinate
+                        position_choice = (location[1])  # Y coordinate.
 
                         if TOP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + FONT_SIZE:
                             side_choice = "white"
@@ -73,28 +73,29 @@ def run_game():
                         if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
                             difficulty_level = (difficulty_level + 1) % 3
 
-        # Main render
+        # Main render.
         draw_game.DrawGame().draw_main_menu(game_screen, language, difficulty_level)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE // 2)
 
-        # Highlighting the chosen
+        # Highlighting the chosen button in main menu.
         location = pygame.mouse.get_pos()
 
         if TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
             chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
         elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
             chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
         elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
             chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
         elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
             chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
+        elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+        elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+            chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
         else:
             chosen_button = None
 
+        draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
         pygame.display.flip()
 
     # AI settings True == player exists.
@@ -119,9 +120,9 @@ def run_game():
         the_second_player = True
         move_as_black = False
     else:
-        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.custom_board)
+        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.custom_board, black_down=True)
         valid_moves = game_manip.get_valid_moves()
-        # Change if its needed
+        # Change if its needed.
         the_first_player = True
         the_second_player = True
         move_as_black = False
@@ -136,15 +137,15 @@ def run_game():
 
         for single_event in pygame.event.get():
             if single_event.type == pygame.QUIT:
-                game_running_state = False  # Exit the game
+                game_running_state = False  # Exit the game.
             # Mouse movement processing.
             elif single_event.type == pygame.MOUSEBUTTONDOWN:
                 if not game_over and is_now_human_turn:
                     location = pygame.mouse.get_pos()
 
                     if BORDER_SIZE < location[0] < B_WIDTH - BORDER_SIZE and BORDER_SIZE < location[1] < B_HEIGHT - BORDER_SIZE:
-                        colomn = (location[0] - BORDER_SIZE) // SQUARE_SIZE  # X coorditate
-                        row = (location[1] - BORDER_SIZE) // SQUARE_SIZE  # Y coordinate
+                        colomn = (location[0] - BORDER_SIZE) // SQUARE_SIZE  # X coorditate.
+                        row = (location[1] - BORDER_SIZE) // SQUARE_SIZE  # Y coordinate.
 
                     if square_selected == (row, colomn):
                         square_selected = tuple()
@@ -177,7 +178,7 @@ def run_game():
             if not ai_is_thinking:
                 ai_is_thinking = True
                 return_queue = multiprocessing.Queue()
-                movement_process = multiprocessing.Process(target=ai_main.AI(difficulty_level).find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
+                movement_process = multiprocessing.Process(target=ai_main.AI(difficulty_level, black_down_flag).find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
                 movement_process.start()
 
             if not movement_process.is_alive():
@@ -186,7 +187,7 @@ def run_game():
                 if ai_move is None:
                     ai_move = ai_main.AI().find_random_move(valid_moves)
 
-                if random.randint(1, 5 * 2**difficulty_level) != 1:
+                if DEBUG_MODE or random.randint(1, 5 * 2**difficulty_level) != 1:
                     move = ai_move
                 else:
                     ai_move = ai_main.AI().find_random_move(valid_moves)
@@ -220,7 +221,7 @@ def run_game():
             game_screen.blit(square, (BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE))
             game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
 
-        pygame.display.flip()  # Next frame
+        pygame.display.flip()  # Next frame.
 
 
 if __name__ == "__main__":

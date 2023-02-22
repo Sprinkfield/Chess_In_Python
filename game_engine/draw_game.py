@@ -4,11 +4,11 @@ import pygame
 
 # Global constants
 B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
+DIMENSIONS = game_objects.GameObjects.DIMENSIONS
 BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
-LETTER_BORDER_SIZE = int(game_objects.SCREENSIZE[1] // 36)
-LETTER_GAP_SIZE = int(game_objects.SCREENSIZE[1] // 43.2)
-DIMENSIONS = 8
-SQUARE_SIZE = (B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS
+LETTER_BORDER_SIZE = int(game_objects.SCREENSIZE[1] / 36)
+LETTER_GAP_SIZE = int(game_objects.SCREENSIZE[1] / 43.2)
+SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
 MAXIMUM_FPS = 60
 IMAGES = dict()
 SQUARE_IMAGES = dict()
@@ -17,11 +17,12 @@ FONT_SIZE = game_objects.GameObjects.FONT_SIZE
 GAP_IN_MAIN_MENU = game_objects.GameObjects.GAP_IN_MAIN_MENU
 SQUARE_TRANSPARENCY_VALUE = 120
 BUTTON_TRANSPARENCY_VALUE = 100
+BUTTON_H_A = int(game_objects.SCREENSIZE[1] / 67.5)
 BLACK_SQUAERS_COLOUR = "dark cyan"
 ALPHABET = game_objects.GameObjects.ALPHABET
 BOLD_TEXT_SETTINGS = True
 ANIMATION_SPEED = 1
-ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] // 22)
+ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] / 22)
 BACKGROUND_FONT_COLOUR = (200, 220, 250)
 FOREGROUND_FONT_COLOUR = (0, 0, 0)
 LANGUAGES = game_objects.GameObjects.LANGUAGES
@@ -39,7 +40,7 @@ class DrawGame:
         IMAGES["white_square"] = pygame.transform.scale(pygame.image.load("images/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
         IMAGES["black_square"] = pygame.transform.scale(pygame.image.load("images/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
-    def draw_main_menu(self, game_screen, language, level):
+    def draw_main_menu(self, game_screen, language, level) -> None:
         game_screen.blit(pygame.transform.scale(pygame.image.load("images/zmain_menu_background.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
 
         font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
@@ -107,13 +108,13 @@ class DrawGame:
                         screen.blit(square, (BORDER_SIZE + SQUARE_SIZE * move.end_col, BORDER_SIZE + SQUARE_SIZE * move.end_row))
 
     def hightlighting_the_button(self, screen, chosen_button) -> None:
-        if chosen_button is not None:
-            button = pygame.Surface((chosen_button.width, FONT_SIZE + 5))
+        if chosen_button:
+            button = pygame.Surface((chosen_button.width, chosen_button.height + (BUTTON_H_A if chosen_button.is_text else 0)))
             button.set_alpha(BUTTON_TRANSPARENCY_VALUE)
             button.fill(pygame.Color(100, 100, 100))
             screen.blit(button, (chosen_button.x, chosen_button.y))
 
-    def highlight_move_made(self, game_screen, move):
+    def highlight_move_made(self, game_screen, move) -> None:
         square = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
         square.set_alpha(50)
         square.fill(pygame.Color("yellow"))
@@ -136,6 +137,16 @@ class DrawGame:
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(str(abs(i)), BOLD_TEXT_SETTINGS, "white")
                 game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
+
+            for i in range(DIMENSIONS - 1, -1, -1):
+                my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
+                text_surface = my_font.render(ALPHABET[-(i+1)], BOLD_TEXT_SETTINGS, "white")
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, B_HEIGHT - BORDER_SIZE//1.05))
+
+            for i in range(DIMENSIONS - 1, -1, -1):
+                my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
+                text_surface = my_font.render(ALPHABET[-(i+1)], BOLD_TEXT_SETTINGS, "white")
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
         else:
             for i in range(DIMENSIONS, 0, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
@@ -147,15 +158,15 @@ class DrawGame:
                 text_surface = my_font.render(str(abs(i-9)), BOLD_TEXT_SETTINGS, "white")
                 game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
             
-        for i in range(DIMENSIONS - 1, -1, -1):
-            my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
-            text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
-            game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, B_HEIGHT - BORDER_SIZE//1.05))
+            for i in range(DIMENSIONS - 1, -1, -1):
+                my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
+                text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, B_HEIGHT - BORDER_SIZE//1.05))
 
-        for i in range(DIMENSIONS - 1, -1, -1):
-            my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
-            text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
-            game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
+            for i in range(DIMENSIONS - 1, -1, -1):
+                my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
+                text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
 
     def draw_game(self, screen) -> None:
         self.load_images()

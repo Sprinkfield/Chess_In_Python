@@ -4,10 +4,13 @@ from game_engine import pieces_moves
 
 class MainMenuButton:
     """Class for main menu buttons. Includes their their coords and size."""
-    def __init__(self, x, y, width) -> None:
+
+    def __init__(self, x, y, width, height=game_objects.GameObjects.FONT_SIZE, is_text=True) -> None:
         self.x = x
         self.y = y
         self.width = width
+        self.height = height
+        self.is_text = is_text
 
 
 class LangSettings:
@@ -105,19 +108,23 @@ class GameBoardState:
         else:
             self.is_enpassant_possible = tuple()
 
-        if move.is_castle_move:
+        if move.is_castle_move and not self.black_down:
             if move.end_col - move.start_col == 2:
-                self.board[move.end_row][move.end_col - 1] = self.board[move.end_row][
-                    move.end_col + 1]
+                self.board[move.end_row][move.end_col - 1] = self.board[move.end_row][move.end_col + 1]
                 self.board[move.end_row][move.end_col + 1] = "--"
             else:
-                self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][
-                    move.end_col - 2]
+                self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 2]
                 self.board[move.end_row][move.end_col - 2] = "--"
-
-        self.is_enpassant_possible_log.append(self.is_enpassant_possible)
+        elif move.is_castle_move and self.black_down:
+            if move.end_col - move.start_col == -2:
+                self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 1]
+                self.board[move.end_row][move.end_col - 1] = "--"
+            else:
+                self.board[move.end_row][move.end_col - 1] = self.board[move.end_row][move.end_col + 2]
+                self.board[move.end_row][move.end_col + 2] = "--"
 
         self.update_castle_rights(move)
+        self.is_enpassant_possible_log.append(self.is_enpassant_possible)
         self.castle_rights_log.append(pieces_moves.CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs))
         current_move_made = pieces_moves.Move([move.start_row, move.start_col], [move.end_row, move.end_col], self.board).get_chess_notation()
 
@@ -285,8 +292,7 @@ class GameBoardState:
                 end_row = row + direction[0] * i
                 end_col = col + direction[1] * i
                 if 0 <= end_row <= 7 and 0 <= end_col <= 7:
-                    if not piece_pinned or pin_direction == direction or pin_direction == (
-                            -direction[0], -direction[1]):
+                    if not piece_pinned or pin_direction == direction or pin_direction == (-direction[0], -direction[1]):
                         end_piece = self.board[end_row][end_col]
 
                         if end_piece == "--":
@@ -420,27 +426,35 @@ class GameBoardState:
         if self.square_under_attack(row, col):
             return  # Nothing.
 
-        if (self.white_to_move and self.current_castling_rights.wks) or (
-                not self.white_to_move and self.current_castling_rights.bks):
+        if (self.white_to_move and self.current_castling_rights.wks) or (not self.white_to_move and self.current_castling_rights.bks):
             self.get_kingside_castle_moves(row, col, moves)
 
-        if (self.white_to_move and self.current_castling_rights.wqs) or (
-                not self.white_to_move and self.current_castling_rights.bqs):
+        if (self.white_to_move and self.current_castling_rights.wqs) or (not self.white_to_move and self.current_castling_rights.bqs):
             self.get_queenside_castle_moves(row, col, moves)
 
     def get_kingside_castle_moves(self, row, col, moves) -> None:
         try:
-            if self.board[row][col + 1] == '--' and self.board[row][col + 2] == '--':
-                if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
-                    moves.append(pieces_moves.Move((row, col), (row, col + 2), self.board, is_castle_move=True))
+            if not self.black_down:
+                if self.board[row][col + 1] == '--' and self.board[row][col + 2] == '--':
+                    if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
+                        moves.append(pieces_moves.Move((row, col), (row, col + 2), self.board, is_castle_move=True))
+            else:
+                if self.board[row][col - 1] == '--' and self.board[row][col - 2] == '--':
+                    if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
+                        moves.append(pieces_moves.Move((row, col), (row, col - 2), self.board, is_castle_move=True))
         except:
             print("Error!")
 
     def get_queenside_castle_moves(self, row, col, moves) -> None:
         try:
-            if self.board[row][col - 1] == '--' and self.board[row][col - 2] == '--' and self.board[row][col - 3] == '--':
-                if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
-                    moves.append(pieces_moves.Move((row, col), (row, col - 2), self.board, is_castle_move=True))
+            if not self.black_down:
+                if self.board[row][col - 1] == '--' and self.board[row][col - 2] == '--' and self.board[row][col - 3] == '--':
+                    if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
+                        moves.append(pieces_moves.Move((row, col), (row, col - 2), self.board, is_castle_move=True))
+            else:
+                if self.board[row][col + 1] == '--' and self.board[row][col + 2] == '--' and self.board[row][col + 3] == '--':
+                    if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
+                        moves.append(pieces_moves.Move((row, col), (row, col + 2), self.board, is_castle_move=True))
         except:
             print("Error!")
 
@@ -489,10 +503,11 @@ class GameBoardState:
                             break
                     elif end_piece[0] == enemy_colour:
                         enemy_type = end_piece[1]
-                        if (0 <= j <= 3 and enemy_type == "R") or (4 <= j <= 7 and enemy_type == "B") or (
-                                i == 1 and enemy_type == "p" and (
-                                (enemy_colour == self.w_side_literal and 6 <= j <= 7) or (enemy_colour == self.b_side_literal and 4 <= j <= 5))) or (
-                                enemy_type == "Q") or (i == 1 and enemy_type == "K"):
+                        if (0 <= j <= 3 and enemy_type == "R") or (4 <= j <= 7 and enemy_type == "B") or \
+                            (i == 1 and enemy_type == "p" and \
+                            ((enemy_colour == self.w_side_literal and 6 <= j <= 7) or \
+                            (enemy_colour == self.b_side_literal and 4 <= j <= 5))) or \
+                            (enemy_type == "Q") or (i == 1 and enemy_type == "K"):
                             if possible_pin == tuple():
                                 in_check = True
                                 checks.append((end_row, end_col, direction[0], direction[1]))
