@@ -4,7 +4,6 @@ from game_engine import pieces_moves
 
 class MainMenuButton:
     """Class for main menu buttons. Includes their their coords and size."""
-
     def __init__(self, x, y, width, height=game_objects.GameObjects.FONT_SIZE, is_text=True) -> None:
         self.x = x
         self.y = y
@@ -27,6 +26,12 @@ class LangSettings:
             self.p_black = "Play as black"
             self.p_vs_f = "Play against a friend"
             self.custom_b = "Play with a custom board"
+            # Settings.
+            self.settings = "Settings"
+            self.language = "Language:"
+            self.difficulty = "Difficulty level:"
+            self.board_theme = "Board theme:"
+            self.piece_set = "Piece set:"
         elif lang == "rus":
             # Endgame.
             self.w_win = "Мат! Белые выиграли"
@@ -38,6 +43,12 @@ class LangSettings:
             self.p_black = "Играть за черных"
             self.p_vs_f = "Играть против друга"
             self.custom_b = "Игра co спец. доской"
+            # Settings.
+            self.settings = "Настройки"
+            self.language = "Язык:"
+            self.difficulty = "Уровень сложности:"
+            self.board_theme = "Тема доски:"
+            self.piece_set = "Тема фигур:"
         elif lang == "ger":
             # Endgame.
             self.w_win = "Schachmatt! Weiß hat gewonnen"
@@ -49,17 +60,46 @@ class LangSettings:
             self.p_black = "Spiele als Schwarz"
             self.p_vs_f = "Spiele gegen einen Freund"
             self.custom_b = "Besonderes Spiel"
+            # Settings.
+            self.settings = "Einstellungen"
+            self.language = "Sprache:"
+            self.difficulty = "Schwierigkeitsgrad:"
+            self.board_theme = "Board-Design:"
+            self.piece_set = "Stücksatz:"
         elif lang == "fra":
             # Endgame.
-            self.w_win = "Échec et mat ! Les blancs ont gagné"
-            self.b_win = "Échec et mat ! Les noirs ont gagné"
-            self.stale = "Impasse ! Tirage au sort"
+            self.w_win = "Échec et mat! Les blancs ont gagné"
+            self.b_win = "Échec et mat! Les noirs ont gagné"
+            self.stale = "Impasse! Tirage au sort"
             # Main menu.
             self.main = "Menu Principal"
             self.p_white = "Jouer en blanc"
             self.p_black = "Jouer en noir"
             self.p_vs_f = "Jouer contre un ami"
             self.custom_b = "Jeu spécial"
+            # Settings.
+            self.settings = "Paramètres"
+            self.language = "Langue:"
+            self.difficulty = "Niveau de difficulté:"
+            self.board_theme = "Thème du tableau:"
+            self.piece_set = "Ensemble de pièces:"
+        elif lang == "chi":
+            # Endgame.
+            self.w_win = "将死！白方赢了"
+            self.b_win = "将死！黑方赢了"
+            self.stale = "僵局！平局"
+            # Main menu.
+            self.main = "主菜单"
+            self.p_white = "扮演白人"
+            self.p_black = "扮演黑人"
+            self.p_vs_f = "和朋友对战"
+            self.custom_b = "玩自定义棋盘"
+            # Settings.
+            self.settings = "设置"
+            self.language = "语言:"
+            self.difficulty = "难度等级"
+            self.board_theme = "棋盘主题"
+            self.piece_set = "棋子集"
 
 
 class GameBoardState:

@@ -48,7 +48,7 @@ class AI:
             move = pieces_moves.Move([1, 3], [3, 3], game_manip.board)  # Queen
             game_manip.make_move(move)
         elif move_as_black and game_manip.board[4][4] == "wp":
-            if random.randint(0, 5) >= 4:
+            if random.randint(0, 5) > 4:
                 move = pieces_moves.Move([1, 2], [3, 2], game_manip.board)  # Sicilian
                 game_manip.make_move(move)
             else:
@@ -88,12 +88,12 @@ class AI:
                     if not self.black_down:
                         if piece[1] != "K":
                             piece_position_score = piece_position_cost_value[piece][row][col]
-                        elif move_counter < 16:
+                        elif move_counter // 2 <= 26:
                             piece_position_score = piece_position_cost_value[piece][row][col]
                     else:
                         if piece[1] != "K":
                             piece_position_score = piece_position_cost_value[piece][row][col]
-                        elif move_counter < 16:
+                        elif move_counter // 2 <= 26:
                             piece_position_score = piece_position_cost_value[piece][row][::-1][col]
 
                     if piece[0] == "w":

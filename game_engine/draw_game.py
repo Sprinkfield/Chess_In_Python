@@ -23,69 +23,124 @@ ALPHABET = game_objects.GameObjects.ALPHABET
 BOLD_TEXT_SETTINGS = True
 ANIMATION_SPEED = 1
 ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] / 22)
-BACKGROUND_FONT_COLOUR = (200, 220, 250)
-FOREGROUND_FONT_COLOUR = (0, 0, 0)
+FOREGROUND_FONT_COLOUR = [180, 180, 190]
+BACKGROUND_FONT_COLOUR = [0, 0, 0]
 LANGUAGES = game_objects.GameObjects.LANGUAGES
-LVL_EASY = pygame.transform.scale(pygame.image.load("images/default/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
-LVL_MEDIUM = pygame.transform.scale(pygame.image.load("images/default/wN.png"), (SQUARE_SIZE, SQUARE_SIZE))
-LVL_HARD = pygame.transform.scale(pygame.image.load("images/default/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
-THEMES_PACK = game_objects.GameObjects.THEMES_PACK
+MAIN_MENU_BACKGROUND = pygame.image.load("images/main_menu_background.png")
+SETTINGS_IMAGE = pygame.transform.scale(pygame.image.load("images/settings_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+MAIN_MENU_IMAGE = pygame.transform.scale(pygame.image.load("images/main_menu_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+PIECE_THEMES_PACK = game_objects.GameObjects.PIECE_THEMES_PACK
+BOARD_THEMES_PACK = game_objects.GameObjects.BOARD_THEMES_PACK
 
 
 class DrawGame:
     """Class that draws GUI: main menu, game board, pieces, move animation, highlights of moves, etc."""
-    def load_images(self, theme_num) -> None:
+    def load_images(self, p_theme_num, b_theme_num) -> None:
         for piece in game_objects.GameObjects.names_of_pieces:
-            IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
+            IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         
-        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
-    def draw_main_menu(self, game_screen, language, level) -> None:
-        game_screen.blit(pygame.transform.scale(pygame.image.load("images/zmain_menu_background.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
+    def draw_main_menu(self, game_screen, language, selected_button) -> None:
+        game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
 
         font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
         font_type_main = pygame.font.SysFont("Arial", FONT_SIZE * 2, True, False)
 
-        text_object = font_type_main.render(language.main, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type_main.render(language.main, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, 80, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type_main.render(language.main, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type_main.render(language.main, False, pygame.Color(FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-        text_object = font_type.render(language.p_white, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_white, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_white, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_white, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 0 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-        text_object = font_type.render(language.p_black, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_black, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_black, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_black, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 1 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-        text_object = font_type.render(language.p_vs_f, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_vs_f, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_vs_f, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_vs_f, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 2 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-        text_object = font_type.render(language.custom_b, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.custom_b, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.custom_b, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.custom_b, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 3 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
         lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(SETTINGS_IMAGE, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+
+    def draw_settings_menu(self, game_screen, language, level, p_theme_num, b_theme_num, selected_button) -> None:
+        game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
+        dy = 2.6
+
+        font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
+        font_type_main = pygame.font.SysFont("Arial", FONT_SIZE * 2, True, False)
+
+        text_object = font_type_main.render(language.settings, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, 80, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type_main.render(language.settings, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        # Difficulty settings.
+        text_object = font_type.render(language.difficulty, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, TOP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 1.8, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.difficulty, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 0 else FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        diff_but_location = pygame.Rect(0, TOP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 + text_object.get_width() / 2.2, - FONT_SIZE / dy)
+
+        lvl_easy = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/wp.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        lvl_medium = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/wN.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        lvl_hard = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/wQ.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
         if level == 0:
-            game_screen.blit(LVL_EASY, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+            game_screen.blit(lvl_easy, diff_but_location)
         elif level == 1:
-            game_screen.blit(LVL_MEDIUM, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+            game_screen.blit(lvl_medium, diff_but_location)
         elif level == 2:
-            game_screen.blit(LVL_HARD, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+            game_screen.blit(lvl_hard, diff_but_location)
+
+        # Board type settings.
+        text_object = font_type.render(language.board_theme, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 1.8, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.board_theme, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 1 else FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        diff_but_location = pygame.Rect(0, TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 + text_object.get_width() / 2.2, - FONT_SIZE / dy)
+        king_image = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/theme_img.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(king_image, diff_but_location)
+
+        # Piece type settings.
+        text_object = font_type.render(language.piece_set, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 1.8, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.piece_set, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 2 else FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        diff_but_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 + text_object.get_width() / 2.2, - FONT_SIZE / dy)
+        king_image = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/wK.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(king_image, diff_but_location)
+
+        # Language mode settings.
+        lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(MAIN_MENU_IMAGE, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
 
     def hightlighting_possible_moves(self, screen, gs, valid_moves, square_selected) -> None:
         if square_selected != ():
@@ -122,10 +177,10 @@ class DrawGame:
         game_screen.blit(square, (BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE))
         game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
 
-    def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False, theme_num=0) -> None:
-        self.draw_game(game_screen, theme_num)
+    def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False, p_theme_num=0, b_theme_num=0) -> None:
+        self.draw_game(game_screen, p_theme_num, b_theme_num)
         self.hightlighting_possible_moves(game_screen, game_manip, valid_moves, square_selected)
-        self.draw_pieces(game_screen, game_manip.board, theme_num)
+        self.draw_pieces(game_screen, game_manip.board, p_theme_num, b_theme_num)
 
         # Drawing letters and numbers.
         if is_black_down:
@@ -169,8 +224,8 @@ class DrawGame:
                 text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
                 game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
 
-    def draw_game(self, screen, theme_num) -> None:
-        self.load_images(theme_num)
+    def draw_game(self, screen, p_theme_num, b_theme_num) -> None:
+        self.load_images(p_theme_num, b_theme_num)
         white_colour = False
 
         for row in range(DIMENSIONS):
@@ -185,14 +240,14 @@ class DrawGame:
 
     def draw_end_game_state(text_line, game_screen) -> None:
         font_type = pygame.font.SysFont("Arial", ENDGAME_TEXT_SIZE, True, False)
-        text_object = font_type.render(text_line, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(text_line, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, B_HEIGHT/2 - 38, B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(text_line, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_object = font_type.render(text_line, False, pygame.Color(FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-    def draw_pieces(self, game_screen, board, theme_num) -> None:
-        self.load_images(theme_num)
+    def draw_pieces(self, game_screen, board, p_theme_num, b_theme_num) -> None:
+        self.load_images(p_theme_num, b_theme_num)
 
         for row in range(DIMENSIONS):
             for col in range(DIMENSIONS):
@@ -200,7 +255,7 @@ class DrawGame:
                 if piece != "--":
                     game_screen.blit(IMAGES[piece], pygame.Rect(BORDER_SIZE + col*SQUARE_SIZE, BORDER_SIZE + row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-    def animate_move(self, move, screen, board, clock, theme_num) -> None:
+    def animate_move(self, move, screen, board, clock, p_theme_num, b_theme_num) -> None:
         move_row = move.end_row - move.start_row
         move_col = move.end_col - move.start_col
         frames_per_second = ANIMATION_SPEED
@@ -208,8 +263,8 @@ class DrawGame:
         square_colour = ["white_square", "black_square"][(move.end_row + move.end_col) % 2]
 
         for frame in range(frame_count + 1):
-            self.draw_game(screen, theme_num)
-            self.draw_pieces(screen, board, theme_num)
+            self.draw_game(screen, p_theme_num, b_theme_num)
+            self.draw_pieces(screen, board, p_theme_num, b_theme_num)
             row, col = (move.start_row + move_row * frame / frame_count, move.start_col + move_col * frame / frame_count)
             end_square = pygame.Rect(BORDER_SIZE + move.end_col * SQUARE_SIZE, BORDER_SIZE + move.end_row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)
             screen.blit(IMAGES[square_colour], pygame.Rect(BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))

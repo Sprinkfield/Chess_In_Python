@@ -13,13 +13,15 @@ import random
 TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
 DEBUG_MODE = game_objects.GameObjects.DEBUG_MODE
 FONT_SIZE = game_objects.GameObjects.FONT_SIZE
+FONT_DELTA = game_objects.GameObjects.FONT_DELTA
 GAP_IN_MAIN_MENU = game_objects.GameObjects.GAP_IN_MAIN_MENU
 B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
 BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
 SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
 MAXIMUM_FRAMES_PER_SECOND_VALUE = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 LANGUAGE_NAME = game_objects.GameObjects.LANGUAGES
-THEMES_PACK = game_objects.GameObjects.THEMES_PACK
+PIECE_THEMES_PACK = game_objects.GameObjects.PIECE_THEMES_PACK
+BOARD_THEMES_PACK = game_objects.GameObjects.BOARD_THEMES_PACK
 B_B_WIDTH = game_objects.SCREENSIZE[1] * 2
 
 
@@ -35,79 +37,144 @@ def run_game():
     pygame.display.set_caption("Chess")
     game_timer = pygame.time.Clock()
     move_made = False  # Flag for the completed movement.
-    side_choice = False
+    gamemode = False
     move_counter = 0
     move_as_black = False
     black_down_flag = False
     lang_num = 0  # English
     language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
     difficulty_level = 1
-    theme_num = 0
+    p_theme_num = 0
+    b_theme_num = 0
+    in_main_menu = True
 
     square_selected = tuple()
     player_clicks = list()
     ai_is_thinking = False
     chosen_button = None
+    selected_button = None
 
-    while side_choice == False:
-        for single_event in pygame.event.get():
-            if single_event.type == pygame.QUIT:
-                side_choice = "white"
-                game_running_state = False
-            # Mouse movement processing.
-            elif single_event.type == pygame.MOUSEBUTTONDOWN:
-                    if BORDER_SIZE < location[1] < B_HEIGHT:
-                        position_choice = (location[1])  # Y coordinate.
+    ### /* MENU (GUI)
+    while gamemode == False:
+        if in_main_menu:  # Main Menu.
+            for single_event in pygame.event.get():
+                if single_event.type == pygame.QUIT:
+                    gamemode = "white"
+                    game_running_state = False
+                    in_main_menu = False
+                # Mouse movement processing.
+                elif single_event.type == pygame.MOUSEBUTTONDOWN:
+                        if BORDER_SIZE < location[1] < B_HEIGHT:
+                            position_choice = (location[1])  # Y coordinate.
 
-                        if TOP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + FONT_SIZE:
-                            side_choice = "white"
-                        elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
-                            side_choice = "black"
-                        elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
-                            side_choice = "play_with_a_friend"
-                        elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                            side_choice = "play_with_a_custom_board"
-                        
-                        if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                            lang_num += 1
-                            language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
+                            if TOP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + FONT_SIZE:
+                                gamemode = "white"
+                            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
+                                gamemode = "black"
+                            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
+                                gamemode = "play_with_a_friend"
+                            elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= position_choice <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
+                                gamemode = "play_with_a_custom_board"
+                            
+                            if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+                                lang_num += 1
+                                language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
 
-                        if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                            difficulty_level = (difficulty_level + 1) % 3
+                            if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                                in_main_menu = False
 
-        # Main render.
-        draw_game.DrawGame().draw_main_menu(game_screen, language, difficulty_level)
-        game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE // 2)
+            # Main menu render.
+            draw_game.DrawGame().draw_main_menu(game_screen, language, selected_button)
+            game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
-        # Highlighting the chosen button in main menu.
-        location = pygame.mouse.get_pos()
+            # Highlighting the chosen button in main menu.
+            location = pygame.mouse.get_pos()
 
-        if TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-        elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-        elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-        elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-        elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
-        elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-            chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
-        else:
-            chosen_button = None
+            if TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 0
+            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 1
+            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 2
+            elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 3
+            elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            else:
+                chosen_button = None
+                selected_button = None
 
-        draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
-        pygame.display.flip()
+            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
+            pygame.display.flip()
+        else:  # Settings Menu.
+            for single_event in pygame.event.get():
+                if single_event.type == pygame.QUIT:
+                    gamemode = "white"
+                    game_running_state = False
+                    in_main_menu = False
+                # Mouse movement processing.
+                elif single_event.type == pygame.MOUSEBUTTONDOWN:
+                        if BORDER_SIZE < location[1] < B_HEIGHT:
+                            position_choice = (location[1])  # Y coordinate.
+
+                            if TOP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                                difficulty_level = (difficulty_level + 1) % 3
+                            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                                b_theme_num = (b_theme_num + 1) % len(BOARD_THEMES_PACK)
+                            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                                p_theme_num = (p_theme_num + 1) % len(PIECE_THEMES_PACK)
+                            
+                            if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+                                lang_num += 1
+                                language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
+
+                            if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                                in_main_menu = True
+
+            # Settings menu render.
+            draw_game.DrawGame().draw_settings_menu(game_screen, language, difficulty_level, p_theme_num, b_theme_num, selected_button)
+            game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
+
+            # Highlighting the chosen button in settings menu.
+            location = pygame.mouse.get_pos()
+
+            if TOP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 0
+            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 1
+            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                selected_button = 2
+            elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+            elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            else:
+                chosen_button = None
+                selected_button = None
+
+            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
+            pygame.display.flip()
+    ### MENU (GUI) */
 
     # AI settings True == player exists.
-    if side_choice == "white": 
+    if gamemode == "white": 
         game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = False
         move_as_black = True
-    elif side_choice == "black":
+    elif gamemode == "black":
         black_down_flag = True
         game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.black_board, black_down=True)
         the_first_player = False
@@ -115,7 +182,7 @@ def run_game():
         game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
         move_as_black = False
-    elif side_choice == "play_with_a_friend":
+    elif gamemode == "play_with_a_friend":
         game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
@@ -129,10 +196,10 @@ def run_game():
         the_second_player = True
         move_as_black = False
 
-    game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{THEMES_PACK[theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
+    game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
 
     while game_running_state:
-        draw_game.DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, theme_num)
+        draw_game.DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, p_theme_num, b_theme_num)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
         is_now_human_turn = (game_manip.white_to_move and the_first_player) or (not game_manip.white_to_move and the_second_player)
@@ -165,6 +232,8 @@ def run_game():
                                 move_made = True
                                 square_selected = tuple()
                                 player_clicks = list()
+                                if DEBUG_MODE:
+                                    print(move_counter)
 
                         if not move_made:
                             player_clicks = [square_selected]
@@ -200,7 +269,7 @@ def run_game():
                 ai_is_thinking = False
 
         if move_made:
-            draw_game.DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, theme_num)
+            draw_game.DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, p_theme_num, b_theme_num)
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
