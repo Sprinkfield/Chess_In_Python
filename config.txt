@@ -1,0 +1,4 @@
+difficulty_level=1
+p_theme_num=0
+b_theme_num=0
+lang_num=0

@@ -1,10 +1,10 @@
-from game_engine import game_objects
-from game_engine import pieces_moves
+from game_engine.pieces_moves import Move, CastleRights
+from game_engine.game_objects import GameObjects
 
 
 class MainMenuButton:
     """Class for main menu buttons. Includes their their coords and size."""
-    def __init__(self, x, y, width, height=game_objects.GameObjects.FONT_SIZE, is_text=True) -> None:
+    def __init__(self, x, y, width, height=GameObjects.FONT_SIZE, is_text=True) -> None:
         self.x = x
         self.y = y
         self.width = width
@@ -104,19 +104,19 @@ class LangSettings:
 
 class GameBoardState:
     """Class where all moves possibilities compute."""
-    DIMENSIONS = game_objects.GameObjects.DIMENSIONS
+    DIMENSIONS = GameObjects.DIMENSIONS
 
     def __init__(self, board_type=None, black_down=False) -> None:
         self.board = board_type
         self.white_to_move = True
         self.is_enpassant_possible = tuple()
         self.is_enpassant_possible_log = [self.is_enpassant_possible]
-        self.current_castling_rights = pieces_moves.CastleRights(True, True, True, True)
-        self.castle_rights_log = [pieces_moves.CastleRights(self.current_castling_rights.wks, 
+        self.current_castling_rights = CastleRights(True, True, True, True)
+        self.castle_rights_log = [CastleRights(self.current_castling_rights.wks, 
         self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs)]
         self.move_log = list()
-        self.white_king_location = (game_objects.GameObjects.DIMENSIONS - 1, game_objects.GameObjects.DIMENSIONS // 2)
-        self.black_king_location = (0, game_objects.GameObjects.DIMENSIONS // 2)
+        self.white_king_location = (GameObjects.DIMENSIONS - 1, GameObjects.DIMENSIONS // 2)
+        self.black_king_location = (0, GameObjects.DIMENSIONS // 2)
         self.checkmate = False
         self.stalemate = False
         self.in_check = False
@@ -165,8 +165,8 @@ class GameBoardState:
 
         self.update_castle_rights(move)
         self.is_enpassant_possible_log.append(self.is_enpassant_possible)
-        self.castle_rights_log.append(pieces_moves.CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs))
-        current_move_made = pieces_moves.Move([move.start_row, move.start_col], [move.end_row, move.end_col], self.board).get_chess_notation()
+        self.castle_rights_log.append(CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs))
+        current_move_made = Move([move.start_row, move.start_col], [move.end_row, move.end_col], self.board).get_chess_notation()
 
         return current_move_made
 
@@ -251,14 +251,14 @@ class GameBoardState:
 
         if self.board[row + move_amount][col] == "--":
             if not piece_pinned or pin_direction == (move_amount, 0):
-                moves.append(pieces_moves.Move((row, col), (row + move_amount, col), self.board))
+                moves.append(Move((row, col), (row + move_amount, col), self.board))
                 if row == start_row and self.board[row + 2 * move_amount][col] == "--":
-                    moves.append(pieces_moves.Move((row, col), (row + 2 * move_amount, col), self.board))
+                    moves.append(Move((row, col), (row + 2 * move_amount, col), self.board))
 
         if col - 1 >= 0:
             if not piece_pinned or pin_direction == (move_amount, -1):
                 if self.board[row + move_amount][col - 1][0] == enemy_colour:
-                    moves.append(pieces_moves.Move((row, col), (row + move_amount, col - 1), self.board))
+                    moves.append(Move((row, col), (row + move_amount, col - 1), self.board))
                 if (row + move_amount, col - 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
                     if king_row == row:
@@ -282,12 +282,12 @@ class GameBoardState:
                                 blocking_piece = True
 
                     if not attacking_piece or blocking_piece:
-                        moves.append(pieces_moves.Move((row, col), (row + move_amount, col - 1), self.board, is_enpassant_move=True))
+                        moves.append(Move((row, col), (row + move_amount, col - 1), self.board, is_enpassant_move=True))
 
         if col + 1 <= 7:
             if not piece_pinned or pin_direction == (move_amount, +1):
                 if self.board[row + move_amount][col + 1][0] == enemy_colour:
-                    moves.append(pieces_moves.Move((row, col), (row + move_amount, col + 1), self.board))
+                    moves.append(Move((row, col), (row + move_amount, col + 1), self.board))
                 if (row + move_amount, col + 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
                     if king_row == row:
@@ -311,7 +311,7 @@ class GameBoardState:
                                 blocking_piece = True
 
                     if not attacking_piece or blocking_piece:
-                        moves.append(pieces_moves.Move((row, col), (row + move_amount, col + 1), self.board, is_enpassant_move=True))
+                        moves.append(Move((row, col), (row + move_amount, col + 1), self.board, is_enpassant_move=True))
 
     def get_rook_moves(self, row, col, moves) -> None:
         piece_pinned = False
@@ -336,9 +336,9 @@ class GameBoardState:
                         end_piece = self.board[end_row][end_col]
 
                         if end_piece == "--":
-                            moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                            moves.append(Move((row, col), (end_row, end_col), self.board))
                         elif end_piece[0] == enemy_colour:
-                            moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                            moves.append(Move((row, col), (end_row, end_col), self.board))
                             break
                         else:
                             break
@@ -366,7 +366,7 @@ class GameBoardState:
                     end_piece = self.board[end_row][end_col]
 
                     if end_piece[0] != ally_colour:
-                        moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
 
     def get_bishop_moves(self, row, col, moves) -> None:
         piece_pinned = False
@@ -391,9 +391,9 @@ class GameBoardState:
                         end_piece = self.board[end_row][end_col]
 
                         if end_piece == "--":
-                            moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                            moves.append(Move((row, col), (end_row, end_col), self.board))
                         elif end_piece[0] == enemy_colour:
-                            moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                            moves.append(Move((row, col), (end_row, end_col), self.board))
                             break
                         else:
                             break
@@ -424,7 +424,7 @@ class GameBoardState:
                     in_check, pins, checks = self.check_for_pins_or_checks()
 
                     if not in_check:
-                        moves.append(pieces_moves.Move((row, col), (end_row, end_col), self.board))
+                        moves.append(Move((row, col), (end_row, end_col), self.board))
                     
                     if ally_colour == self.w_side_literal:
                         self.white_king_location = (row, col)
@@ -477,11 +477,11 @@ class GameBoardState:
             if not self.black_down:
                 if self.board[row][col + 1] == '--' and self.board[row][col + 2] == '--':
                     if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
-                        moves.append(pieces_moves.Move((row, col), (row, col + 2), self.board, is_castle_move=True))
+                        moves.append(Move((row, col), (row, col + 2), self.board, is_castle_move=True))
             else:
                 if self.board[row][col - 1] == '--' and self.board[row][col - 2] == '--':
                     if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
-                        moves.append(pieces_moves.Move((row, col), (row, col - 2), self.board, is_castle_move=True))
+                        moves.append(Move((row, col), (row, col - 2), self.board, is_castle_move=True))
         except:
             print("Error!")
 
@@ -490,11 +490,11 @@ class GameBoardState:
             if not self.black_down:
                 if self.board[row][col - 1] == '--' and self.board[row][col - 2] == '--' and self.board[row][col - 3] == '--':
                     if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
-                        moves.append(pieces_moves.Move((row, col), (row, col - 2), self.board, is_castle_move=True))
+                        moves.append(Move((row, col), (row, col - 2), self.board, is_castle_move=True))
             else:
                 if self.board[row][col + 1] == '--' and self.board[row][col + 2] == '--' and self.board[row][col + 3] == '--':
                     if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
-                        moves.append(pieces_moves.Move((row, col), (row, col + 2), self.board, is_castle_move=True))
+                        moves.append(Move((row, col), (row, col + 2), self.board, is_castle_move=True))
         except:
             print("Error!")
 
@@ -574,7 +574,7 @@ class GameBoardState:
         return in_check, pins, checks
 
     def get_valid_moves(self) -> list:
-        temp_c_r = pieces_moves.CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs)
+        temp_c_r = CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks, self.current_castling_rights.wqs, self.current_castling_rights.bqs)
 
         moves = list()
         self.in_check, self.pins, self.checks = self.check_for_pins_or_checks()

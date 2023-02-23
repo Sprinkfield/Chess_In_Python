@@ -1,13 +1,12 @@
-from game_engine import chess_manip
-from game_engine import game_objects
+from game_engine.game_objects import GameObjects
 
 
 class Move:
     """Class that handles all movements, including AI's."""
-    ranks_to_rows = game_objects.GameObjects.ranks_to_rows
-    rows_to_ranks = game_objects.GameObjects.rows_to_ranks
-    files_to_cols = game_objects.GameObjects.files_to_cols
-    cols_to_files = game_objects.GameObjects.cols_to_files
+    ranks_to_rows = GameObjects.ranks_to_rows
+    rows_to_ranks = GameObjects.rows_to_ranks
+    files_to_cols = GameObjects.files_to_cols
+    cols_to_files = GameObjects.cols_to_files
 
     def __init__(self, start_square, end_square, board, is_enpassant_move=False, is_castle_move=False) -> None:
         self.start_row = start_square[0]

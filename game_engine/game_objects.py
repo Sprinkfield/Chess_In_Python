@@ -5,8 +5,6 @@ import subprocess  # Is needed to get screen resolution (On Linux)
 
 class GameObjects:
     """This is one of the main classes where all useful information is stored."""
-    global SCREENSIZE
-
     if platform.system().lower() != "linux":
         ### For Windows ###
         user32 = ctypes.windll.user32
@@ -30,7 +28,7 @@ class GameObjects:
     GAP_IN_MAIN_MENU = FONT_SIZE * 2
     LANGUAGES = ["eng", "rus", "ger", "fra"]
     PIECE_THEMES_PACK = ["default", "pixel"]  # You can add piece_custom inside this list.
-    BOARD_THEMES_PACK = ["board_classic", "board_b_w"]  # You can add board_custom inside this list.
+    BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r"]  # You can add board_custom inside this list.
 
     white_board = [["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
                    ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],

@@ -1,19 +1,17 @@
-from game_engine import chess_manip
-from game_engine import pieces_moves
-from game_engine import game_objects
-from functools import *
+from game_engine.game_objects import GameObjects
+from game_engine.pieces_moves import Move
 import random
 
 
 # Global constants
 CHECKMATE = 1000
 STALEMATE = 0
-PAWN_COST_VALUE = game_objects.GameObjects.PAWN_COST_VALUE
-KNIGHT_COST_VALUE = game_objects.GameObjects.KNIGHT_COST_VALUE
-BISHOP_COST_VALUE = game_objects.GameObjects.BISHOP_COST_VALUE
-ROOK_COST_VALUE = game_objects.GameObjects.ROOK_COST_VALUE
-QUEEN_COST_VALUE = game_objects.GameObjects.QUEEN_COST_VALUE
-KING_COST_VALUE = game_objects.GameObjects.KING_COST_VALUE
+PAWN_COST_VALUE = GameObjects.PAWN_COST_VALUE
+KNIGHT_COST_VALUE = GameObjects.KNIGHT_COST_VALUE
+BISHOP_COST_VALUE = GameObjects.BISHOP_COST_VALUE
+ROOK_COST_VALUE = GameObjects.ROOK_COST_VALUE
+QUEEN_COST_VALUE = GameObjects.QUEEN_COST_VALUE
+KING_COST_VALUE = GameObjects.KING_COST_VALUE
 
 piece_value_cost = {"K": 100,
                     "p": 1,
@@ -45,25 +43,25 @@ class AI:
 
     def opening_move(self, move_as_black=False, game_manip=None):
         if move_as_black and game_manip.board[4][3] == "wp":
-            move = pieces_moves.Move([1, 3], [3, 3], game_manip.board)  # Queen
+            move = Move([1, 3], [3, 3], game_manip.board)  # Queen
             game_manip.make_move(move)
         elif move_as_black and game_manip.board[4][4] == "wp":
             if random.randint(0, 5) > 4:
-                move = pieces_moves.Move([1, 2], [3, 2], game_manip.board)  # Sicilian
+                move = Move([1, 2], [3, 2], game_manip.board)  # Sicilian
                 game_manip.make_move(move)
             else:
-                move = pieces_moves.Move([1, 4], [3, 4], game_manip.board)  # King
+                move = Move([1, 4], [3, 4], game_manip.board)  # King
                 game_manip.make_move(move)
         else:
             if random.randint(0, 5) < 5:
-                move = pieces_moves.Move([1, 3], [3, 3], game_manip.board)  # King
+                move = Move([1, 3], [3, 3], game_manip.board)  # King
                 game_manip.make_move(move)
             else:
                 if random.randint(0, 4) < 4:
-                    move = pieces_moves.Move([1, 4], [3, 4], game_manip.board)  # Queen
+                    move = Move([1, 4], [3, 4], game_manip.board)  # Queen
                     game_manip.make_move(move)
                 else:
-                    move = pieces_moves.Move([1, 5], [3, 5], game_manip.board)  # Sicilian
+                    move = Move([1, 5], [3, 5], game_manip.board)  # Sicilian
                     game_manip.make_move(move)
         return move
 

@@ -1,28 +1,56 @@
 # __name__ = "__main__"
-from game_engine import chess_manip
-from game_engine import game_objects
-from game_engine import draw_game
-from game_engine import pieces_moves
-from ai_engine import ai_main
+from game_engine.chess_manip import LangSettings, MainMenuButton, GameBoardState
+from game_engine.game_objects import GameObjects
+from game_engine.draw_game import DrawGame
+from game_engine.pieces_moves import Move
+from ai_engine.ai_main import AI
 import multiprocessing
 import pygame
 import random
 
 
 # Global constants
-TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
-DEBUG_MODE = game_objects.GameObjects.DEBUG_MODE
-FONT_SIZE = game_objects.GameObjects.FONT_SIZE
-FONT_DELTA = game_objects.GameObjects.FONT_DELTA
-GAP_IN_MAIN_MENU = game_objects.GameObjects.GAP_IN_MAIN_MENU
-B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
-BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
-SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
-MAXIMUM_FRAMES_PER_SECOND_VALUE = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
-LANGUAGE_NAME = game_objects.GameObjects.LANGUAGES
-PIECE_THEMES_PACK = game_objects.GameObjects.PIECE_THEMES_PACK
-BOARD_THEMES_PACK = game_objects.GameObjects.BOARD_THEMES_PACK
-B_B_WIDTH = game_objects.SCREENSIZE[1] * 2
+TOP_IN_MAIN_MENU = GameObjects.TOP_IN_MAIN_MENU
+DEBUG_MODE = GameObjects.DEBUG_MODE
+FONT_SIZE = GameObjects.FONT_SIZE
+FONT_DELTA = GameObjects.FONT_DELTA
+GAP_IN_MAIN_MENU = GameObjects.GAP_IN_MAIN_MENU
+B_WIDTH = B_HEIGHT = GameObjects.B_HEIGHT
+BORDER_SIZE = GameObjects.BORDER_SIZE
+SQUARE_SIZE = GameObjects.SQUARE_SIZE
+MAXIMUM_FRAMES_PER_SECOND_VALUE = GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
+LANGUAGE_NAME = GameObjects.LANGUAGES
+PIECE_THEMES_PACK = GameObjects.PIECE_THEMES_PACK
+BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
+B_B_WIDTH = GameObjects.SCREENSIZE[1] * 2
+
+
+def get_config():
+    with open("config.txt", "r") as file:
+        data = file.read().split()
+        data = [line.split("=") for line in data]
+
+    data_dict = dict()
+
+    for key, value in data:
+        value = int(value)
+        data_dict[key] = value
+
+    return data_dict
+
+
+def write_config(new_data):
+    data = []
+
+    for key, value in new_data.items():
+        data.append(f"{key}={value}")
+
+    line = ""
+    for element in data:
+        line += element + "\n"
+    
+    with open("config.txt", "w") as file:
+        file.write(line)
 
 
 def run_game():
@@ -41,13 +69,15 @@ def run_game():
     move_counter = 0
     move_as_black = False
     black_down_flag = False
-    lang_num = 0  # English
-    language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
-    difficulty_level = 1
-    p_theme_num = 0
-    b_theme_num = 0
     in_main_menu = True
 
+    data_dict = get_config()
+    difficulty_level = data_dict["difficulty_level"]
+    p_theme_num = data_dict["p_theme_num"]
+    b_theme_num = data_dict["b_theme_num"]
+    lang_num = data_dict["lang_num"]
+
+    language = LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
     square_selected = tuple()
     player_clicks = list()
     ai_is_thinking = False
@@ -77,40 +107,41 @@ def run_game():
                                 gamemode = "play_with_a_custom_board"
                             
                             if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                                lang_num += 1
-                                language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
+                                lang_num = (lang_num + 1) % len(LANGUAGE_NAME)
+                                language = LangSettings(LANGUAGE_NAME[lang_num])
 
                             if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
                                 in_main_menu = False
 
             # Main menu render.
-            draw_game.DrawGame().draw_main_menu(game_screen, language, selected_button)
+            DrawGame().draw_main_menu(game_screen, language, selected_button)
             game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
             # Highlighting the chosen button in main menu.
             location = pygame.mouse.get_pos()
 
             if TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 0
             elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 1
             elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 2
             elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 3
             elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                chosen_button = MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
             elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                # chosen_button = MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                selected_button = -1
             else:
                 chosen_button = None
                 selected_button = None
 
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
+            DrawGame().hightlighting_the_button(game_screen, chosen_button)
             pygame.display.flip()
         else:  # Settings Menu.
             for single_event in pygame.event.get():
@@ -132,64 +163,74 @@ def run_game():
                             
                             if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
                                 lang_num += 1
-                                language = chess_manip.LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
+                                language = LangSettings(LANGUAGE_NAME[lang_num % len(LANGUAGE_NAME)])
 
                             if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
                                 in_main_menu = True
 
             # Settings menu render.
-            draw_game.DrawGame().draw_settings_menu(game_screen, language, difficulty_level, p_theme_num, b_theme_num, selected_button)
+            DrawGame().draw_settings_menu(game_screen, language, difficulty_level, p_theme_num, b_theme_num, selected_button)
             game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
             # Highlighting the chosen button in settings menu.
             location = pygame.mouse.get_pos()
 
             if TOP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 0
             elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 1
             elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 2
             elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
             elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = chess_manip.MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                chosen_button = MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
             elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = chess_manip.MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                # chosen_button = MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+                selected_button = -1
             else:
                 chosen_button = None
                 selected_button = None
 
-            draw_game.DrawGame().hightlighting_the_button(game_screen, chosen_button)
+            DrawGame().hightlighting_the_button(game_screen, chosen_button)
             pygame.display.flip()
     ### MENU (GUI) */
 
+    new_data = {
+        "difficulty_level": difficulty_level,
+        "p_theme_num": p_theme_num,
+        "b_theme_num": b_theme_num,
+        "lang_num": lang_num,
+    }
+    
+    write_config(new_data)
+
     # AI settings True == player exists.
     if gamemode == "white": 
-        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.white_board)
+        game_manip = GameBoardState(board_type=GameObjects.white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = False
         move_as_black = True
     elif gamemode == "black":
         black_down_flag = True
-        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.black_board, black_down=True)
+        game_manip = GameBoardState(board_type=GameObjects.black_board, black_down=True)
         the_first_player = False
         the_second_player = True
         game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
         move_as_black = False
     elif gamemode == "play_with_a_friend":
-        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.white_board)
+        game_manip = GameBoardState(board_type=GameObjects.white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = True
         move_as_black = False
     else:
-        game_manip = chess_manip.GameBoardState(board_type=game_objects.GameObjects.custom_board, black_down=True)
+        game_manip = GameBoardState(board_type=GameObjects.custom_board, black_down=True)
         valid_moves = game_manip.get_valid_moves()
         # Change if its needed.
         the_first_player = True
@@ -199,7 +240,7 @@ def run_game():
     game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
 
     while game_running_state:
-        draw_game.DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, p_theme_num, b_theme_num)
+        DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, p_theme_num, b_theme_num)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
         is_now_human_turn = (game_manip.white_to_move and the_first_player) or (not game_manip.white_to_move and the_second_player)
@@ -224,7 +265,7 @@ def run_game():
                         player_clicks.append(square_selected)
 
                     if len(player_clicks) == 2:
-                        move = pieces_moves.Move(player_clicks[0], player_clicks[1], game_manip.board)
+                        move = Move(player_clicks[0], player_clicks[1], game_manip.board)
 
                         for stored_move in valid_moves:
                             if move == stored_move:
@@ -239,29 +280,29 @@ def run_game():
                             player_clicks = [square_selected]
 
         if not is_now_human_turn and move_as_black:
-            move = ai_main.AI().opening_move(move_as_black=True, game_manip=game_manip)
+            move = AI().opening_move(move_as_black=True, game_manip=game_manip)
             move_as_black = False
             move_made = True
         elif move_counter == 0 and is_now_human_turn is False:
-            move = ai_main.AI().opening_move(move_as_black=False, game_manip=game_manip)
+            move = AI().opening_move(move_as_black=False, game_manip=game_manip)
             move_made = True
         elif not game_over and not is_now_human_turn:
             if not ai_is_thinking:
                 ai_is_thinking = True
                 return_queue = multiprocessing.Queue()
-                movement_process = multiprocessing.Process(target=ai_main.AI(difficulty_level, black_down_flag).find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
+                movement_process = multiprocessing.Process(target=AI(difficulty_level, black_down_flag).find_best_move, args=(move_counter, game_manip, valid_moves, return_queue))
                 movement_process.start()
 
             if not movement_process.is_alive():
                 ai_move = return_queue.get()
 
                 if ai_move is None:
-                    ai_move = ai_main.AI().find_random_move(valid_moves)
+                    ai_move = AI().find_random_move(valid_moves)
 
                 if DEBUG_MODE or random.randint(1, 5 * 2**difficulty_level) != 1:
                     move = ai_move
                 else:
-                    ai_move = ai_main.AI().find_random_move(valid_moves)
+                    ai_move = AI().find_random_move(valid_moves)
                     move = ai_move
                     print("Oh, I probably made a mistake!")
                 game_manip.make_move(ai_move)
@@ -269,7 +310,7 @@ def run_game():
                 ai_is_thinking = False
 
         if move_made:
-            draw_game.DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, p_theme_num, b_theme_num)
+            DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, p_theme_num, b_theme_num)
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
@@ -277,13 +318,13 @@ def run_game():
         if game_manip.checkmate:
             if game_manip.white_to_move:
                 game_over = True
-                draw_game.DrawGame.draw_end_game_state(text_line=language.b_win, game_screen=game_screen)
+                DrawGame.draw_end_game_state(text_line=language.b_win, game_screen=game_screen)
             else:
                 game_over = True
-                draw_game.DrawGame.draw_end_game_state(text_line=language.w_win, game_screen=game_screen)
+                DrawGame.draw_end_game_state(text_line=language.w_win, game_screen=game_screen)
         elif game_manip.stalemate:
             game_over = True
-            draw_game.DrawGame.draw_end_game_state(text_line=language.stale, game_screen=game_screen)
+            DrawGame.draw_end_game_state(text_line=language.stale, game_screen=game_screen)
 
         if move_counter >= 1:
             square = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))

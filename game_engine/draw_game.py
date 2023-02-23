@@ -1,42 +1,40 @@
-from game_engine import game_objects
+from game_engine.game_objects import GameObjects
 import pygame
 
 
 # Global constants
-B_WIDTH = B_HEIGHT = game_objects.GameObjects.B_HEIGHT
-DIMENSIONS = game_objects.GameObjects.DIMENSIONS
-BORDER_SIZE = game_objects.GameObjects.BORDER_SIZE
-LETTER_BORDER_SIZE = int(game_objects.SCREENSIZE[1] / 36)
-LETTER_GAP_SIZE = int(game_objects.SCREENSIZE[1] / 43.2)
-SQUARE_SIZE = game_objects.GameObjects.SQUARE_SIZE
-MAXIMUM_FPS = game_objects.GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
+B_WIDTH = B_HEIGHT = GameObjects.B_HEIGHT
+DIMENSIONS = GameObjects.DIMENSIONS
+BORDER_SIZE = GameObjects.BORDER_SIZE
+LETTER_BORDER_SIZE = int(GameObjects.SCREENSIZE[1] / 36)
+LETTER_GAP_SIZE = int(GameObjects.SCREENSIZE[1] / 43.2)
+SQUARE_SIZE = GameObjects.SQUARE_SIZE
+MAXIMUM_FPS = GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 IMAGES = dict()
 SQUARE_IMAGES = dict()
-TOP_IN_MAIN_MENU = game_objects.GameObjects.TOP_IN_MAIN_MENU
-FONT_SIZE = game_objects.GameObjects.FONT_SIZE
-GAP_IN_MAIN_MENU = game_objects.GameObjects.GAP_IN_MAIN_MENU
+TOP_IN_MAIN_MENU = GameObjects.TOP_IN_MAIN_MENU
+FONT_SIZE = GameObjects.FONT_SIZE
+GAP_IN_MAIN_MENU = GameObjects.GAP_IN_MAIN_MENU
 SQUARE_TRANSPARENCY_VALUE = 120
 BUTTON_TRANSPARENCY_VALUE = 100
-BUTTON_H_A = int(game_objects.SCREENSIZE[1] / 67.5)
+BUTTON_H_A = int(GameObjects.SCREENSIZE[1] / 67.5)
 BLACK_SQUAERS_COLOUR = "dark cyan"
-ALPHABET = game_objects.GameObjects.ALPHABET
+ALPHABET = GameObjects.ALPHABET
 BOLD_TEXT_SETTINGS = True
 ANIMATION_SPEED = 1
-ENDGAME_TEXT_SIZE = int(game_objects.SCREENSIZE[1] / 22)
+ENDGAME_TEXT_SIZE = int(GameObjects.SCREENSIZE[1] / 22)
 FOREGROUND_FONT_COLOUR = [180, 180, 190]
 BACKGROUND_FONT_COLOUR = [0, 0, 0]
-LANGUAGES = game_objects.GameObjects.LANGUAGES
+LANGUAGES = GameObjects.LANGUAGES
 MAIN_MENU_BACKGROUND = pygame.image.load("images/main_menu_background.png")
-SETTINGS_IMAGE = pygame.transform.scale(pygame.image.load("images/settings_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
-MAIN_MENU_IMAGE = pygame.transform.scale(pygame.image.load("images/main_menu_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
-PIECE_THEMES_PACK = game_objects.GameObjects.PIECE_THEMES_PACK
-BOARD_THEMES_PACK = game_objects.GameObjects.BOARD_THEMES_PACK
+PIECE_THEMES_PACK = GameObjects.PIECE_THEMES_PACK
+BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
 
 
 class DrawGame:
     """Class that draws GUI: main menu, game board, pieces, move animation, highlights of moves, etc."""
     def load_images(self, p_theme_num, b_theme_num) -> None:
-        for piece in game_objects.GameObjects.names_of_pieces:
+        for piece in GameObjects.names_of_pieces:
             IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         
         IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
@@ -78,9 +76,13 @@ class DrawGame:
         text_object = font_type.render(language.custom_b, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 3 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
+        if selected_button != -1:
+            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        else:
+            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button_light.png"), (SQUARE_SIZE, SQUARE_SIZE))
         lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(SETTINGS_IMAGE, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(settings_image, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_settings_menu(self, game_screen, language, level, p_theme_num, b_theme_num, selected_button) -> None:
         game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
@@ -138,9 +140,13 @@ class DrawGame:
         game_screen.blit(king_image, diff_but_location)
 
         # Language mode settings.
+        if selected_button != -1:
+            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        else:
+            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button_light.png"), (SQUARE_SIZE, SQUARE_SIZE))
         lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(MAIN_MENU_IMAGE, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+        game_screen.blit(main_menu_image, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
 
     def hightlighting_possible_moves(self, screen, gs, valid_moves, square_selected) -> None:
         if square_selected != ():
