@@ -18,6 +18,7 @@ GAP_IN_MAIN_MENU = GameObjects.GAP_IN_MAIN_MENU
 B_WIDTH = B_HEIGHT = GameObjects.B_HEIGHT
 BORDER_SIZE = GameObjects.BORDER_SIZE
 SQUARE_SIZE = GameObjects.SQUARE_SIZE
+BUTTON_SIZE = GameObjects.BUTTON_SIZE
 MAXIMUM_FRAMES_PER_SECOND_VALUE = GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 LANGUAGE_NAME = GameObjects.LANGUAGES
 PIECE_THEMES_PACK = GameObjects.PIECE_THEMES_PACK
@@ -121,21 +122,16 @@ def run_game():
             location = pygame.mouse.get_pos()
 
             if TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 0
             elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 1
             elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 2
             elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 3
-            elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
-            elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                # chosen_button = MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            elif B_WIDTH - BUTTON_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= BUTTON_SIZE:
+                chosen_button = MainMenuButton(x=B_WIDTH - BUTTON_SIZE, y=0, width=BUTTON_SIZE, height=BUTTON_SIZE, is_text=False)
+            elif 0 <= location[0] <= BUTTON_SIZE and 0 <= location[1] <= BUTTON_SIZE:
                 selected_button = -1
             else:
                 chosen_button = None
@@ -176,20 +172,16 @@ def run_game():
             location = pygame.mouse.get_pos()
 
             if TOP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 0
             elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 1
             elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
                 selected_button = 2
             elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
                 chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
-            elif B_WIDTH - SQUARE_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                chosen_button = MainMenuButton(x=B_WIDTH - SQUARE_SIZE, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
-            elif 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                # chosen_button = MainMenuButton(x=0, y=0, width=SQUARE_SIZE, height=SQUARE_SIZE, is_text=False)
+            elif B_WIDTH - BUTTON_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= BUTTON_SIZE:
+                chosen_button = MainMenuButton(x=B_WIDTH - BUTTON_SIZE, y=0, width=BUTTON_SIZE, height=BUTTON_SIZE, is_text=False)
+            elif 0 <= location[0] <= BUTTON_SIZE and 0 <= location[1] <= BUTTON_SIZE:
                 selected_button = -1
             else:
                 chosen_button = None

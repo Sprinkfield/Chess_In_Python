@@ -9,6 +9,7 @@ BORDER_SIZE = GameObjects.BORDER_SIZE
 LETTER_BORDER_SIZE = int(GameObjects.SCREENSIZE[1] / 36)
 LETTER_GAP_SIZE = int(GameObjects.SCREENSIZE[1] / 43.2)
 SQUARE_SIZE = GameObjects.SQUARE_SIZE
+BUTTON_SIZE = GameObjects.BUTTON_SIZE
 MAXIMUM_FPS = GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
 IMAGES = dict()
 SQUARE_IMAGES = dict()
@@ -17,7 +18,6 @@ FONT_SIZE = GameObjects.FONT_SIZE
 GAP_IN_MAIN_MENU = GameObjects.GAP_IN_MAIN_MENU
 SQUARE_TRANSPARENCY_VALUE = 120
 BUTTON_TRANSPARENCY_VALUE = 100
-BUTTON_H_A = int(GameObjects.SCREENSIZE[1] / 67.5)
 BLACK_SQUAERS_COLOUR = "dark cyan"
 ALPHABET = GameObjects.ALPHABET
 BOLD_TEXT_SETTINGS = True
@@ -77,12 +77,12 @@ class DrawGame:
         game_screen.blit(text_object, text_location.move(2, 2))
 
         if selected_button != -1:
-            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button.png"), (BUTTON_SIZE, BUTTON_SIZE))
         else:
-            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button_light.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(settings_image, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+            settings_image = pygame.transform.scale(pygame.image.load("images/settings_button_light.png"), (BUTTON_SIZE, BUTTON_SIZE))
+        lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (BUTTON_SIZE, BUTTON_SIZE))
+        game_screen.blit(lang_image, pygame.Rect(B_WIDTH - BUTTON_SIZE, 0, BUTTON_SIZE, BUTTON_SIZE))
+        game_screen.blit(settings_image, pygame.Rect(0, 0, BUTTON_SIZE, BUTTON_SIZE))
 
     def draw_settings_menu(self, game_screen, language, level, p_theme_num, b_theme_num, selected_button) -> None:
         game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
@@ -141,12 +141,12 @@ class DrawGame:
 
         # Language mode settings.
         if selected_button != -1:
-            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button.png"), (SQUARE_SIZE, SQUARE_SIZE))
+            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button.png"), (BUTTON_SIZE, BUTTON_SIZE))
         else:
-            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button_light.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(lang_image, pygame.Rect(B_WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE))
-        game_screen.blit(main_menu_image, pygame.Rect(0, 0, SQUARE_SIZE, SQUARE_SIZE))
+            main_menu_image = pygame.transform.scale(pygame.image.load("images/main_menu_button_light.png"), (BUTTON_SIZE, BUTTON_SIZE))
+        lang_image = pygame.transform.scale(pygame.image.load(f"images/flag_{language.lang_name}.png"), (BUTTON_SIZE, BUTTON_SIZE))
+        game_screen.blit(lang_image, pygame.Rect(B_WIDTH - BUTTON_SIZE, 0, BUTTON_SIZE, BUTTON_SIZE))
+        game_screen.blit(main_menu_image, pygame.Rect(0, 0, BUTTON_SIZE, BUTTON_SIZE))
 
     def hightlighting_possible_moves(self, screen, gs, valid_moves, square_selected) -> None:
         if square_selected != ():
@@ -171,7 +171,7 @@ class DrawGame:
 
     def hightlighting_the_button(self, screen, chosen_button) -> None:
         if chosen_button:
-            button = pygame.Surface((chosen_button.width, chosen_button.height + (BUTTON_H_A if chosen_button.is_text else 0)))
+            button = pygame.Surface((chosen_button.width, chosen_button.height))
             button.set_alpha(BUTTON_TRANSPARENCY_VALUE)
             button.fill(pygame.Color(100, 100, 100))
             screen.blit(button, (chosen_button.x, chosen_button.y))
