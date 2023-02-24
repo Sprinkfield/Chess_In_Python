@@ -41,11 +41,11 @@ class AI:
         self.DEPTH = difficulty_level + 2
         self.black_down = black_down
 
-    def opening_move(self, move_as_black=False, game_manip=None):
-        if move_as_black and game_manip.board[4][3] == "wp":
+    def opening_move(self, ai_move_as_black=False, game_manip=None):
+        if ai_move_as_black and game_manip.board[4][3] == "wp":
             move = Move([1, 3], [3, 3], game_manip.board)  # Queen
             game_manip.make_move(move)
-        elif move_as_black and game_manip.board[4][4] == "wp":
+        elif ai_move_as_black and game_manip.board[4][4] == "wp":
             if random.randint(0, 5) > 4:
                 move = Move([1, 2], [3, 2], game_manip.board)  # Sicilian
                 game_manip.make_move(move)

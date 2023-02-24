@@ -13,20 +13,20 @@ class GameObjects:
         ### For Linux ###
         output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
         SCREENSIZE = tuple(map(int, output.split()[0].split(b'x')))
-
+    
     # Constants
     DEBUG_MODE = False
-    BORDER_SIZE = SCREENSIZE[1] // 27
+    BORDER_SIZE = int(SCREENSIZE[1] // 27)
     B_WIDTH = B_HEIGHT = int(SCREENSIZE[1]*0.7) + 4 * BORDER_SIZE
     DIMENSIONS = 8
-    SQUARE_SIZE = (B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS
-    BUTTON_SIZE = SQUARE_SIZE * 0.9
+    SQUARE_SIZE = int((B_HEIGHT - 2*BORDER_SIZE) // DIMENSIONS)
+    BUTTON_SIZE = int(SQUARE_SIZE * 0.9)
     ALPHABET = "ABCDEFGH"
     MAXIMUM_FRAMES_PER_SECOND_VALUE = 60
-    TOP_IN_MAIN_MENU = SCREENSIZE[1] // 3
-    FONT_SIZE = SCREENSIZE[1] // 18
+    TOP_IN_MAIN_MENU = int(SCREENSIZE[1] // 2.8)
+    FONT_SIZE = int(SCREENSIZE[1] // 18)
     FONT_DELTA = int(FONT_SIZE / 3)
-    GAP_IN_MAIN_MENU = FONT_SIZE * 2
+    GAP_IN_MAIN_MENU = int(FONT_SIZE * 2)
     LANGUAGES = ["eng", "rus", "ger", "fra"]
     PIECE_THEMES_PACK = ["default", "pixel"]  # You can add piece_custom inside this list.
     BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r"]  # You can add board_custom inside this list.

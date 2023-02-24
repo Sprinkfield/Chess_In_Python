@@ -52,28 +52,34 @@ class DrawGame:
         text_object = font_type_main.render(language.main, False, pygame.Color(FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
+        text_object = font_type.render(language.rating, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.rating, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 0 else FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
         text_object = font_type.render(language.p_white, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_white, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 0 else FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_white, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 1 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
         text_object = font_type.render(language.p_black, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_black, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 1 else FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_black, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 2 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
         text_object = font_type.render(language.p_vs_f, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.p_vs_f, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 2 else FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.p_vs_f, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 3 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
         text_object = font_type.render(language.custom_b, False, pygame.Color(BACKGROUND_FONT_COLOUR))
         text_location = pygame.Rect(0, TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU, B_WIDTH, 100).move(B_WIDTH / 2 - text_object.get_width() / 2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(language.custom_b, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 3 else FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(language.custom_b, False, pygame.Color(list(map(lambda x: x + 65, FOREGROUND_FONT_COLOUR)) if selected_button == 4 else FOREGROUND_FONT_COLOUR))
         game_screen.blit(text_object, text_location.move(2, 2))
 
         if selected_button != -1:
@@ -244,12 +250,19 @@ class DrawGame:
 
                 white_colour = not white_colour
 
-    def draw_end_game_state(text_line, game_screen) -> None:
+    def draw_end_game_state(language, text_line, game_screen) -> None:
         font_type = pygame.font.SysFont("Arial", ENDGAME_TEXT_SIZE, True, False)
         text_object = font_type.render(text_line, False, pygame.Color(BACKGROUND_FONT_COLOUR))
-        text_location = pygame.Rect(0, B_HEIGHT/2 - 38, B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        text_location = pygame.Rect(0, int(B_HEIGHT/2 - ENDGAME_TEXT_SIZE / 1.2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
         game_screen.blit(text_object, text_location)
-        text_object = font_type.render(text_line, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        text_object = font_type.render(text_line, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        font_type = pygame.font.SysFont("Arial", ENDGAME_TEXT_SIZE // 2, True, False)
+        text_object = font_type.render(language.click, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, int(B_HEIGHT/2 + ENDGAME_TEXT_SIZE // 2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.click, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
         game_screen.blit(text_object, text_location.move(2, 2))
 
     def draw_pieces(self, game_screen, board, p_theme_num, b_theme_num) -> None:
