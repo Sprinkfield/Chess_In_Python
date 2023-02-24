@@ -8,6 +8,7 @@ from ai_engine.ai_main import AI
 import multiprocessing
 import pygame
 import random
+import sys
 
 
 # Global constants
@@ -53,10 +54,10 @@ def endgame_stuff(language, text, game_screen):
     while True:
         for single_event in pygame.event.get():
             if single_event.type == pygame.QUIT:
-                exit()
+                sys.exit()
             # Mouse movement processing.
             elif single_event.type in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]:
-                exit(run_game())
+                sys.exit(run_game())
         DrawGame.draw_end_game_state(language, text_line=text, game_screen=game_screen)
         pygame.display.flip()  # Next frame.
 
@@ -105,8 +106,6 @@ def run_game():
                 # Mouse movement processing.
                 elif single_event.type == pygame.MOUSEBUTTONDOWN:
                         if BORDER_SIZE < location[1] < B_HEIGHT:
-                            position_choice = (location[1])  # Y coordinate.
-
                             if TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU + FONT_SIZE:
                                 gamemode = "rating"
                             elif TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
@@ -161,13 +160,11 @@ def run_game():
                 # Mouse movement processing.
                 elif single_event.type == pygame.MOUSEBUTTONDOWN:
                         if BORDER_SIZE < location[1] < B_HEIGHT:
-                            position_choice = (location[1])  # Y coordinate.
-
-                            if TOP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                            if TOP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
                                 difficulty_level = (difficulty_level + 1) % 3
-                            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
                                 b_theme_num = (b_theme_num + 1) % len(BOARD_THEMES_PACK)
-                            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= position_choice <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
+                            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
                                 p_theme_num = (p_theme_num + 1) % len(PIECE_THEMES_PACK)
                             
                             if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
