@@ -7,14 +7,14 @@ bp bp bp bp bp bp bp bp
 wp wp wp wp wp wp wp wp
 wR wN wB wQ wK wB wN wR
 
-wR wN wB wQ wK wB wN wR
+wR wN wB wK wQ wB wN wR
 wp wp wp wp wp wp wp wp
 -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- --
 bp bp bp bp bp bp bp bp
-bR bN bB bQ bK bB bN bR
+bR bN bB bK bQ bB bN bR
 
 -- -- -- -- -- -- bK --
 -- -- -- -- -- -- wp --
