@@ -1,7 +1,7 @@
 class Elo:
     def calculate_elo(elo, result):
         new_elo = int(elo + 200 * result)
-        return new_elo
+        return new_elo if new_elo > 0 else 0
 
 
     def set_difficulty(elo):

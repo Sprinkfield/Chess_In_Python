@@ -80,6 +80,10 @@ def run_game():
     black_down_flag = False
     in_main_menu = True
 
+    white_board = GameObjects.get_boards()[0]
+    black_board = GameObjects.get_boards()[1]
+    custom_board = GameObjects.get_boards()[2]
+
     data_dict = get_config()
     difficulty_level = data_dict["difficulty_level"]
     p_theme_num = data_dict["p_theme_num"]
@@ -214,33 +218,38 @@ def run_game():
 
     # AI settings True == player exists.
     if gamemode == "rating":
-        game_manip = GameBoardState(board_type=GameObjects.white_board)
+        if last_p_side == 0:
+            game_manip = GameBoardState(board_type=white_board, black_down=False)
+        else:
+            black_down_flag = True
+            game_manip = GameBoardState(board_type=black_board, black_down=True)
+            game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
-        the_first_player = True
-        the_second_player = False
-        ai_move_as_black = True
+        the_first_player = True if last_p_side == 0 else False
+        the_second_player = False if last_p_side == 0 else True
+        ai_move_as_black = True if last_p_side == 0 else False
     elif gamemode == "white":
-        game_manip = GameBoardState(board_type=GameObjects.white_board)
+        game_manip = GameBoardState(board_type=white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = False
         ai_move_as_black = True
     elif gamemode == "black":
         black_down_flag = True
-        game_manip = GameBoardState(board_type=GameObjects.black_board, black_down=True)
+        game_manip = GameBoardState(board_type=black_board, black_down=True)
         the_first_player = False
         the_second_player = True
         game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
         ai_move_as_black = False
     elif gamemode == "play_with_a_friend":
-        game_manip = GameBoardState(board_type=GameObjects.white_board)
+        game_manip = GameBoardState(board_type=white_board)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = True
         ai_move_as_black = False
     else:
-        game_manip = GameBoardState(board_type=GameObjects.custom_board, black_down=True)
+        game_manip = GameBoardState(board_type=custom_board, black_down=True)
         valid_moves = game_manip.get_valid_moves()
         # Change if its needed.
         the_first_player = True
@@ -329,11 +338,12 @@ def run_game():
         if game_manip.checkmate:
             if game_manip.white_to_move:
                 game_over = True
-                if the_first_player:
-                    result = -1
-                else:
-                    result = 1
                 if gamemode == "rating":
+                    if the_first_player:
+                        result = -1
+                    else:
+                        result = 1
+                    last_p_side = (last_p_side + 1) % 2
                     player_elo = Elo.calculate_elo(player_elo, result)
                     new_data = {
                         "difficulty_level": difficulty_level,
@@ -347,11 +357,12 @@ def run_game():
                 endgame_stuff(language, language.b_win, game_screen)
             else:
                 game_over = True
-                if the_first_player:
-                    result = 1
-                else:
-                    result = -1
                 if gamemode == "rating":
+                    if the_first_player:
+                        result = 1
+                    else:
+                        result = -1
+                    last_p_side = (last_p_side + 1) % 2
                     player_elo = Elo.calculate_elo(player_elo, result)
                     new_data = {
                         "difficulty_level": difficulty_level,
