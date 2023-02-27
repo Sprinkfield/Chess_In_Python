@@ -13,27 +13,29 @@ ROOK_COST_VALUE = GameObjects.ROOK_COST_VALUE
 QUEEN_COST_VALUE = GameObjects.QUEEN_COST_VALUE
 KING_COST_VALUE = GameObjects.KING_COST_VALUE
 
-piece_value_cost = {"K": 100,
-                    "p": 1,
-                    "N": 3,
-                    "B": 3.5,
-                    "R": 5,
-                    "Q": 9,
-                    }
+piece_value_cost = {
+    "K": 100,
+    "p": 1,
+    "N": 3,
+    "B": 3.5,
+    "R": 5,
+    "Q": 9,
+}
 
-piece_position_cost_value = {"wK": KING_COST_VALUE,
-                             "bK": KING_COST_VALUE[::-1],
-                             "wN": KNIGHT_COST_VALUE,
-                             "bN": KNIGHT_COST_VALUE[::-1],
-                             "wB": BISHOP_COST_VALUE,
-                             "bB": BISHOP_COST_VALUE[::-1],
-                             "wQ": QUEEN_COST_VALUE,
-                             "bQ": QUEEN_COST_VALUE[::-1],
-                             "wR": ROOK_COST_VALUE,
-                             "bR": ROOK_COST_VALUE[::-1],
-                             "wp": PAWN_COST_VALUE,
-                             "bp": PAWN_COST_VALUE[::-1],
-                            }
+piece_position_cost_value = {
+    "wK": KING_COST_VALUE,
+    "bK": KING_COST_VALUE[::-1],
+    "wN": KNIGHT_COST_VALUE,
+    "bN": KNIGHT_COST_VALUE[::-1],
+    "wB": BISHOP_COST_VALUE,
+    "bB": BISHOP_COST_VALUE[::-1],
+    "wQ": QUEEN_COST_VALUE,
+    "bQ": QUEEN_COST_VALUE[::-1],
+    "wR": ROOK_COST_VALUE,
+    "bR": ROOK_COST_VALUE[::-1],
+    "wp": PAWN_COST_VALUE,
+    "bp": PAWN_COST_VALUE[::-1],
+}
 
 
 class AI:
@@ -111,7 +113,7 @@ class AI:
         max_score = -CHECKMATE
 
         for move in valid_moves:
-            if (move_counter < 6 and str(move)[0] == "Q") and not (game_manip.board[3][4] == "bp"):
+            if (move_counter < 12 and str(move)[0] == "Q") and not (game_manip.board[3][4] == "bp"):
                 continue
             else:
                 game_manip.make_move(move)

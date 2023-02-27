@@ -343,8 +343,9 @@ def run_game():
                         result = -1
                     else:
                         result = 1
+                    # player_elo = Elo.calculate_elo(player_elo, result)
+                    player_elo = Elo.beta_calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
                     last_p_side = (last_p_side + 1) % 2
-                    player_elo = Elo.calculate_elo(player_elo, result)
                     new_data = {
                         "difficulty_level": difficulty_level,
                         "p_theme_num": p_theme_num,
@@ -362,8 +363,9 @@ def run_game():
                         result = 1
                     else:
                         result = -1
+                    # player_elo = Elo.calculate_elo(player_elo, result)
+                    player_elo = Elo.beta_calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
                     last_p_side = (last_p_side + 1) % 2
-                    player_elo = Elo.calculate_elo(player_elo, result)
                     new_data = {
                         "difficulty_level": difficulty_level,
                         "p_theme_num": p_theme_num,
@@ -376,6 +378,18 @@ def run_game():
                 endgame_stuff(language, language.w_win, game_screen)
         elif game_manip.stalemate:
             game_over = True
+            # player_elo = Elo.calculate_elo(player_elo, 0)
+            player_elo = Elo.beta_calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)
+            last_p_side = (last_p_side + 1) % 2
+            new_data = {
+                "difficulty_level": difficulty_level,
+                "p_theme_num": p_theme_num,
+                "b_theme_num": b_theme_num,
+                "lang_num": lang_num,
+                "player_elo": player_elo,
+                "last_p_side": last_p_side,
+            }
+            write_config(new_data)
             endgame_stuff(language, language.stale, game_screen)
 
         if move_counter >= 1:

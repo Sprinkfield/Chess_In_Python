@@ -7,7 +7,6 @@ B_WIDTH = B_HEIGHT = GameObjects.B_HEIGHT
 DIMENSIONS = GameObjects.DIMENSIONS
 BORDER_SIZE = GameObjects.BORDER_SIZE
 LETTER_BORDER_SIZE = int(GameObjects.SCREENSIZE[1] / 36)
-LETTER_GAP_SIZE = int(GameObjects.SCREENSIZE[1] / 43.2)
 SQUARE_SIZE = GameObjects.SQUARE_SIZE
 BUTTON_SIZE = GameObjects.BUTTON_SIZE
 MAXIMUM_FPS = GameObjects.MAXIMUM_FRAMES_PER_SECOND_VALUE
@@ -199,42 +198,42 @@ class DrawGame:
             for i in range(DIMENSIONS, 0, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(str(abs(i)), BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (BORDER_SIZE//4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
+                game_screen.blit(text_surface, (BORDER_SIZE//3.6, SQUARE_SIZE * (i) - SQUARE_SIZE//4.5))
 
             for i in range(DIMENSIONS, 0, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(str(abs(i)), BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
+                game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.333, SQUARE_SIZE * (i) - SQUARE_SIZE//4.5))
 
             for i in range(DIMENSIONS - 1, -1, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(ALPHABET[-(i+1)], BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, B_HEIGHT - BORDER_SIZE//1.05))
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - SQUARE_SIZE//4.5, B_HEIGHT - BORDER_SIZE//1.05))
 
             for i in range(DIMENSIONS - 1, -1, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(ALPHABET[-(i+1)], BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - SQUARE_SIZE//4.5, BORDER_SIZE//6))
         else:
             for i in range(DIMENSIONS, 0, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(str(abs(i-9)), BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (BORDER_SIZE//4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
+                game_screen.blit(text_surface, (BORDER_SIZE//3.6, SQUARE_SIZE * (i) - SQUARE_SIZE//4.5))
 
             for i in range(DIMENSIONS, 0, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(str(abs(i-9)), BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.4, SQUARE_SIZE * (i) - LETTER_GAP_SIZE))
+                game_screen.blit(text_surface, (B_WIDTH - BORDER_SIZE//1.333, SQUARE_SIZE * (i) - SQUARE_SIZE//4.5))
             
             for i in range(DIMENSIONS - 1, -1, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, B_HEIGHT - BORDER_SIZE//1.05))
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - SQUARE_SIZE//4.5, B_HEIGHT - BORDER_SIZE//1.05))
 
             for i in range(DIMENSIONS - 1, -1, -1):
                 my_font = pygame.font.SysFont('Arial', LETTER_BORDER_SIZE)
                 text_surface = my_font.render(ALPHABET[i], BOLD_TEXT_SETTINGS, "white")
-                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - LETTER_GAP_SIZE, BORDER_SIZE//6))
+                game_screen.blit(text_surface, (SQUARE_SIZE * (i+1) - SQUARE_SIZE//4.5, BORDER_SIZE//6))
 
     def draw_game(self, screen, p_theme_num, b_theme_num) -> None:
         self.load_images(p_theme_num, b_theme_num)
