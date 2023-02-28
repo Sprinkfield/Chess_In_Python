@@ -1,18 +1,11 @@
 class Elo:
-    def beta_calculate_elo(game_manip, elo, result, side, turns):
+    def calculate_elo(game_manip, elo, result, side, turns) -> int:
         score = Elo.score_board(game_manip, side)
-        if result in [0, 1]:
-            side = 0**side
-            new_elo = elo + (0**side)*(5*score/turns) + (20*score/turns)**result - (0**result)*(4*score/turns)
-        if result == -1:
-            new_elo = elo + (0**side)*(5*score/turns) - (20*score/turns)
+        side = 0**side  # side: 0 => 1, 1 => 0.
+        new_elo = elo + 2*((0**side)*(score/turns) + (20*score/turns)**result - (0**abs(result))*(4*score/turns) - (20*score/turns)**(-result))
         return int(new_elo) if new_elo > 0 else 0
-    
-    def calculate_elo(elo, result):
-        new_elo = int(elo + 200 * result)
-        return new_elo if new_elo > 0 else 0
 
-    def set_difficulty(elo):
+    def set_difficulty(elo) -> int:
         if elo < 1000:
             diff_lvl = 0
         elif 1000 <= elo <= 2000:
@@ -21,7 +14,7 @@ class Elo:
             diff_lvl = 2
         return diff_lvl
 
-    def calc_mis_chance(elo):
+    def calc_mis_chance(elo) -> int:
         #  Actual chance = 1 / chance
         if elo <= 500:
             chance = 2

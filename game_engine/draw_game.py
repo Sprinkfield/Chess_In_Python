@@ -276,8 +276,7 @@ class DrawGame:
     def animate_move(self, move, screen, board, clock, p_theme_num, b_theme_num) -> None:
         move_row = move.end_row - move.start_row
         move_col = move.end_col - move.start_col
-        frames_per_second = ANIMATION_SPEED
-        frame_count = (abs(move_row) + abs(move_col)) * frames_per_second
+        frame_count = (abs(move_row) + abs(move_col)) * ANIMATION_SPEED
         square_colour = ["white_square", "black_square"][(move.end_row + move.end_col) % 2]
 
         for frame in range(frame_count + 1):
@@ -294,7 +293,6 @@ class DrawGame:
                 screen.blit(IMAGES[move.piece_captured], end_square)
 
             screen.blit(IMAGES[move.piece_moved], pygame.Rect(BORDER_SIZE + col * SQUARE_SIZE, BORDER_SIZE + row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-            # self.highlight_move_made(screen, move)  # Highlighting made move
 
-            pygame.display.flip()
             clock.tick(MAXIMUM_FPS)
+            pygame.display.flip()

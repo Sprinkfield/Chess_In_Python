@@ -31,7 +31,7 @@ class GameObjects:
     PIECE_THEMES_PACK = ["default", "pixel"]  # You can add piece_custom inside this list.
     BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r"]  # You can add board_custom inside this list.
 
-    def get_boards():
+    def get_boards() -> tuple[list, list, list]:
         with open("game_engine/boards.txt", "r") as file:
             data = file.read().split()
 

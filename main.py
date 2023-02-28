@@ -28,7 +28,7 @@ BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
 B_B_WIDTH = GameObjects.SCREENSIZE[1] * 2
 
 
-def get_config():
+def get_config() -> None:
     with open("config.txt", "r") as file:
         data = file.read().split()
         data = [line.split("=") for line in data]
@@ -39,7 +39,7 @@ def get_config():
     return data_dict
 
 
-def write_config(new_data):
+def write_config(new_data) -> None:
     data = []
     for key, value in new_data.items():
         data.append(f"{key}={value}")
@@ -62,7 +62,7 @@ def endgame_stuff(language, text, game_screen):
         pygame.display.flip()  # Next frame.
 
 
-def run_game():
+def run_game() -> None:
     multiprocessing.freeze_support()  # If you use pyinstaller to convert .py file to .exe
     pygame.init()
     pygame.font.init()
@@ -255,8 +255,10 @@ def run_game():
         the_first_player = True
         the_second_player = True
         ai_move_as_black = False
+        move_counter = 100
 
     game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
+    confirmed_move = Move((0, 0), (1, 1), game_manip.board)
 
     while game_running_state:
         DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, p_theme_num, b_theme_num)
@@ -289,6 +291,7 @@ def run_game():
                             for stored_move in valid_moves:
                                 if move == stored_move:
                                     game_manip.make_move(stored_move)
+                                    confirmed_move = move
                                     move_made = True
                                     square_selected = tuple()
                                     player_clicks = list()
@@ -298,13 +301,15 @@ def run_game():
                             if not move_made:
                                 player_clicks = [square_selected]
 
-        if not is_now_human_turn and ai_move_as_black:
+        if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
             ai_move_as_black = False
             move_made = True
-        elif move_counter == 0 and is_now_human_turn is False:
+            confirmed_move = move
+        elif move_counter == 0 and is_now_human_turn is False and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=False, game_manip=game_manip)
             move_made = True
+            confirmed_move = move
         elif not game_over and not is_now_human_turn:
             if not ai_is_thinking:
                 ai_is_thinking = True
@@ -328,6 +333,7 @@ def run_game():
                 game_manip.make_move(ai_move)
                 move_made = True
                 ai_is_thinking = False
+                confirmed_move = ai_move
 
         if move_made:
             DrawGame().animate_move(game_manip.move_log[-1], game_screen, game_manip.board, game_timer, p_theme_num, b_theme_num)
@@ -335,16 +341,15 @@ def run_game():
             move_made = False
             move_counter += 1
 
-        if game_manip.checkmate:
+        if game_manip.checkmate or Elo.score_board(game_manip, 0) < 100 or Elo.score_board(game_manip, 1) < 100:
+            game_over = True
             if game_manip.white_to_move:
-                game_over = True
                 if gamemode == "rating":
                     if the_first_player:
                         result = -1
                     else:
                         result = 1
-                    # player_elo = Elo.calculate_elo(player_elo, result)
-                    player_elo = Elo.beta_calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
+                    player_elo = Elo.calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
                     last_p_side = (last_p_side + 1) % 2
                     new_data = {
                         "difficulty_level": difficulty_level,
@@ -357,14 +362,12 @@ def run_game():
                     write_config(new_data)
                 endgame_stuff(language, language.b_win, game_screen)
             else:
-                game_over = True
                 if gamemode == "rating":
                     if the_first_player:
                         result = 1
                     else:
                         result = -1
-                    # player_elo = Elo.calculate_elo(player_elo, result)
-                    player_elo = Elo.beta_calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
+                    player_elo = Elo.calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
                     last_p_side = (last_p_side + 1) % 2
                     new_data = {
                         "difficulty_level": difficulty_level,
@@ -376,31 +379,31 @@ def run_game():
                     }
                     write_config(new_data)
                 endgame_stuff(language, language.w_win, game_screen)
-        elif game_manip.stalemate:
+        elif game_manip.stalemate or Elo.score_board(game_manip, last_p_side) <= 103:
             game_over = True
-            # player_elo = Elo.calculate_elo(player_elo, 0)
-            player_elo = Elo.beta_calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)
-            last_p_side = (last_p_side + 1) % 2
-            new_data = {
-                "difficulty_level": difficulty_level,
-                "p_theme_num": p_theme_num,
-                "b_theme_num": b_theme_num,
-                "lang_num": lang_num,
-                "player_elo": player_elo,
-                "last_p_side": last_p_side,
-            }
-            write_config(new_data)
+            if gamemode == "rating":
+                player_elo = Elo.calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)
+                last_p_side = (last_p_side + 1) % 2
+                new_data = {
+                    "difficulty_level": difficulty_level,
+                    "p_theme_num": p_theme_num,
+                    "b_theme_num": b_theme_num,
+                    "lang_num": lang_num,
+                    "player_elo": player_elo,
+                    "last_p_side": last_p_side,
+                }
+                write_config(new_data)
             endgame_stuff(language, language.stale, game_screen)
 
-        if move_counter >= 1:
+        if move_counter >= 1 and (gamemode != "play_with_a_custom_board" or move_counter > 100):
             square = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
-            square.set_alpha(40)
+            square.set_alpha(50)
             square.fill(pygame.Color("blue"))
-            game_screen.blit(square, (BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE))
-            game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
+            game_screen.blit(square, (BORDER_SIZE + confirmed_move.end_col*SQUARE_SIZE, BORDER_SIZE + confirmed_move.end_row*SQUARE_SIZE))
+            game_screen.blit(square, (BORDER_SIZE + confirmed_move.start_col*SQUARE_SIZE, BORDER_SIZE + confirmed_move.start_row*SQUARE_SIZE))
 
         pygame.display.flip()  # Next frame.
-
+        
 
 if __name__ == "__main__":
     run_game()
