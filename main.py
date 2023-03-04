@@ -62,6 +62,53 @@ def endgame_stuff(language, text, game_screen):
         pygame.display.flip()  # Next frame.
 
 
+def surrender(language, game_screen) -> None:
+    menu_open = True
+    TEXT_SIZE = GameObjects.SCREENSIZE[1] // 30
+    FOREGROUND_FONT_COLOUR = [180, 180, 190]
+    BACKGROUND_FONT_COLOUR = [0, 0, 0]
+    bg_dimmed = pygame.Surface((B_WIDTH, B_HEIGHT))
+    bg_dimmed.set_alpha(220)
+    bg_dimmed.fill(pygame.Color(10, 10, 10, 200))
+    game_screen.blit(bg_dimmed, (0, 0))
+    while menu_open:
+        for single_event in pygame.event.get():
+            if single_event.type == pygame.QUIT:
+                sys.exit()
+            # Mouse movement processing.
+            elif single_event.type == pygame.KEYDOWN:
+                if single_event.key == pygame.K_ESCAPE:
+                    menu_open = False
+                    return False
+            elif single_event.type == pygame.MOUSEBUTTONDOWN:
+                    location = pygame.mouse.get_pos()
+                    if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE // 1.2):
+                        bg_dimmed.set_alpha(255)
+                        game_screen.blit(bg_dimmed, (0, 0))
+                        return True
+
+        font_type = pygame.font.SysFont("Arial", TEXT_SIZE, True, False)
+        text_object = font_type.render(language.surrender, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, int(B_HEIGHT/2.2 - TEXT_SIZE / 1.2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.surrender, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        font_type = pygame.font.SysFont("Arial", int(TEXT_SIZE // 1.2), True, False)
+        text_object = font_type.render(language.confirm, False, pygame.Color(BACKGROUND_FONT_COLOUR))
+        text_location = pygame.Rect(0, int(B_HEIGHT/2 + TEXT_SIZE // 2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        game_screen.blit(text_object, text_location)
+        text_object = font_type.render(language.confirm, False, pygame.Color(FOREGROUND_FONT_COLOUR))
+        game_screen.blit(text_object, text_location.move(2, 2))
+
+        location = pygame.mouse.get_pos()
+        if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE // 1.2):
+            text_object = font_type.render(language.confirm, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
+            game_screen.blit(text_object, text_location.move(2, 2))
+
+        pygame.display.flip()  # Next frame.
+
+
 def run_game() -> None:
     multiprocessing.freeze_support()  # If you use pyinstaller to convert .py file to .exe
     pygame.init()
@@ -109,24 +156,25 @@ def run_game() -> None:
                     in_main_menu = False
                 # Mouse movement processing.
                 elif single_event.type == pygame.MOUSEBUTTONDOWN:
-                        if BORDER_SIZE < location[1] < B_HEIGHT:
-                            if TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU + FONT_SIZE:
-                                gamemode = "rating"
-                            elif TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
-                                gamemode = "white"
-                            elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
-                                gamemode = "black"
-                            elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
-                                gamemode = "play_with_a_friend"
-                            elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                                gamemode = "play_with_a_custom_board"
-                            
-                            if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
-                                lang_num = (lang_num + 1) % len(LANGUAGE_NAME)
-                                language = LangSettings(LANGUAGE_NAME[lang_num])
+                    location = pygame.mouse.get_pos()
+                    if BORDER_SIZE < location[1] < B_HEIGHT:
+                        if TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU - GAP_IN_MAIN_MENU + FONT_SIZE:
+                            gamemode = "rating"
+                        elif TOP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + FONT_SIZE:
+                            gamemode = "white"
+                        elif TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + GAP_IN_MAIN_MENU + FONT_SIZE:
+                            gamemode = "black"
+                        elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
+                            gamemode = "play_with_a_friend"
+                        elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
+                            gamemode = "play_with_a_custom_board"
+                        
+                        if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
+                            lang_num = (lang_num + 1) % len(LANGUAGE_NAME)
+                            language = LangSettings(LANGUAGE_NAME[lang_num])
 
-                            if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
-                                in_main_menu = False
+                        if 0 <= location[0] <= SQUARE_SIZE and 0 <= location[1] <= SQUARE_SIZE:
+                            in_main_menu = False
 
             # Main menu render.
             DrawGame().draw_main_menu(game_screen, language, selected_button)
@@ -300,6 +348,10 @@ def run_game() -> None:
 
                             if not move_made:
                                 player_clicks = [square_selected]
+            elif single_event.type == pygame.KEYDOWN:
+                if single_event.key == pygame.K_ESCAPE:
+                    if surrender(language, game_screen):
+                        game_manip.checkmate = True
 
         if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
@@ -403,7 +455,7 @@ def run_game() -> None:
             game_screen.blit(square, (BORDER_SIZE + confirmed_move.start_col*SQUARE_SIZE, BORDER_SIZE + confirmed_move.start_row*SQUARE_SIZE))
 
         pygame.display.flip()  # Next frame.
-        
+
 
 if __name__ == "__main__":
     run_game()

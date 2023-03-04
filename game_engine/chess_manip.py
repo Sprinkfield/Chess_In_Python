@@ -21,6 +21,8 @@ class LangSettings:
             self.b_win = "Checkmate! Black won"
             self.stale = "Stalemate! Draw"
             self.click = "Click any button to return to the Main Menu"
+            self.surrender = "Are you sure you want to surrender?"
+            self.confirm = "Confirm"
             # Main menu.
             self.main = "Main Menu"
             self.rating = "Play rating game"
@@ -40,6 +42,8 @@ class LangSettings:
             self.b_win = "Мат! Черные выиграли"
             self.stale = "Пат! Ничья"
             self.click = "Нажмите любую кнопку, чтобы вернуться в Главное Меню"
+            self.surrender = "Вы уверены, что хотите сдаться?"
+            self.confirm = "Подтвердить"
             # Main menu.
             self.main = "Главное Меню"
             self.rating = "Играть в рейтинговую игру"
@@ -59,6 +63,8 @@ class LangSettings:
             self.b_win = "Schachmatt! Schwarz hat gewonnen"
             self.stale = "Patt! Unentschieden"
             self.click = "Klicken Sie auf eine beliebige Schaltfläche, um zum Hauptmenü zurückzukehren"
+            self.surrender = "Sind Sie sicher, dass Sie aufgeben wollen?"
+            self.confirm = "Bestätigen"
             # Main menu.
             self.main = "Hauptmenü"
             self.rating = "Bewertungsspiel spielen"
@@ -78,6 +84,8 @@ class LangSettings:
             self.b_win = "Échec et mat! Les noirs ont gagné"
             self.stale = "Impasse! Tirage au sort"
             self.click = "Cliquez sur n'importe quel bouton pour revenir au Menu Principal"
+            self.surrender = "Êtes-vous sûr de vouloir vous rendre?"
+            self.confirm = "Confirmer"
             # Main menu.
             self.main = "Menu Principal"
             self.rating = "Jouer au jeu d'évaluation"
@@ -97,6 +105,8 @@ class LangSettings:
             self.b_win = "将死！黑方赢了"
             self.stale = "僵局！平局"
             self.click = "点击任意按钮返回主菜单"
+            self.surrender = "你确定要投降吗?"
+            self.confirm = "确认"
             # Main menu.
             self.main = "主菜单"
             self.rating = "玩评级游戏"
