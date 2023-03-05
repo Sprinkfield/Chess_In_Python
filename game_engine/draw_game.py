@@ -1,5 +1,6 @@
 from game_engine.game_objects import GameObjects
 import pygame
+import sys
 
 
 # Global constants
@@ -152,6 +153,43 @@ class DrawGame:
         game_screen.blit(lang_image, pygame.Rect(B_WIDTH - BUTTON_SIZE, 0, BUTTON_SIZE, BUTTON_SIZE))
         game_screen.blit(main_menu_image, pygame.Rect(0, 0, BUTTON_SIZE, BUTTON_SIZE))
 
+    def promote_choice(self, screen, language, colour) -> str:
+        while True:
+            for single_event in pygame.event.get():
+                if single_event.type == pygame.QUIT:
+                    sys.exit()
+                # Mouse movement processing.
+                elif single_event.type == pygame.MOUSEBUTTONDOWN:
+                    location = pygame.mouse.get_pos()
+                    if int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33) <= location[1] <= int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33) + SQUARE_SIZE:
+                        if int(B_WIDTH/2) - SQUARE_SIZE*2 - int(BORDER_SIZE/20) <= location[0] <= int(B_WIDTH/2) - SQUARE_SIZE*2 - int(BORDER_SIZE/20) + SQUARE_SIZE:
+                            return"Q"
+                        elif int(B_WIDTH/2) - SQUARE_SIZE - int(BORDER_SIZE/20) <= location[0] <= int(B_WIDTH/2) - SQUARE_SIZE - int(BORDER_SIZE/20) + SQUARE_SIZE:
+                            return"R"
+                        elif int(B_WIDTH/2) - int(BORDER_SIZE/20) <= location[0] <= int(B_WIDTH/2) - int(BORDER_SIZE/20) + SQUARE_SIZE:
+                            return "B"
+                        elif int(B_WIDTH/2) + SQUARE_SIZE - int(BORDER_SIZE/20) <= location[0] <= int(B_WIDTH/2) + SQUARE_SIZE - int(BORDER_SIZE/20) + SQUARE_SIZE:
+                            return "N"
+
+            DrawGame().promotion_gui(screen, language, colour)
+            pygame.display.flip()  # Next frame.
+
+    def promotion_gui(self, screen, language, colour) -> None:
+        choice_bg = pygame.Surface((SQUARE_SIZE * 4, int(SQUARE_SIZE * 1.5)))
+        choice_bg.fill(pygame.Color(50, 50, 50))
+        screen.blit(choice_bg, (int(B_WIDTH/2) - SQUARE_SIZE*2 - int(BORDER_SIZE/20), B_HEIGHT//2 - int(SQUARE_SIZE * 0.75)))
+
+        font_type = pygame.font.SysFont("Arial", int(SQUARE_SIZE * 0.25), True, False)
+        text_object = font_type.render(language.promotion, False, pygame.Color(255, 255, 255))
+        text_location = pygame.Rect(0, B_HEIGHT//2 - int(SQUARE_SIZE * 0.75), \
+                                    B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        screen.blit(text_object, text_location)
+
+        screen.blit(IMAGES[f"{colour}Q"], pygame.Rect(int(B_WIDTH/2) - SQUARE_SIZE*2 - int(BORDER_SIZE/20), int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33), SQUARE_SIZE, SQUARE_SIZE))
+        screen.blit(IMAGES[f"{colour}R"], pygame.Rect(int(B_WIDTH/2) - SQUARE_SIZE - int(BORDER_SIZE/20), int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33), SQUARE_SIZE, SQUARE_SIZE))
+        screen.blit(IMAGES[f"{colour}B"], pygame.Rect(int(B_WIDTH/2) - int(BORDER_SIZE/20), int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33), SQUARE_SIZE, SQUARE_SIZE))
+        screen.blit(IMAGES[f"{colour}N"], pygame.Rect(int(B_WIDTH/2) + SQUARE_SIZE - int(BORDER_SIZE/20), int(B_HEIGHT / 2) - int(SQUARE_SIZE * 0.33), SQUARE_SIZE, SQUARE_SIZE))
+
     def hightlighting_possible_moves(self, screen, gs, valid_moves, square_selected) -> None:
         if square_selected != ():
             row, col = square_selected
@@ -249,7 +287,7 @@ class DrawGame:
 
                 white_colour = not white_colour
 
-    def draw_end_game_state(language, text_line, game_screen) -> None:
+    def draw_end_game_state(self, language, text_line, game_screen) -> None:
         endgame_text_size = int(GameObjects.SCREENSIZE[1] / 22)
 
         if language.lang_name in ["ger", "fra"]:

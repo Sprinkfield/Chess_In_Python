@@ -46,25 +46,25 @@ class AI:
     def opening_move(self, ai_move_as_black=False, game_manip=None):
         if ai_move_as_black and game_manip.board[4][3] == "wp":
             move = Move([1, 3], [3, 3], game_manip.board)  # Queen
-            game_manip.make_move(move)
+            game_manip.make_move(move, ai=True)
         elif ai_move_as_black and game_manip.board[4][4] == "wp":
             if random.randint(0, 5) > 4:
                 move = Move([1, 2], [3, 2], game_manip.board)  # Sicilian
-                game_manip.make_move(move)
+                game_manip.make_move(move, ai=True)
             else:
                 move = Move([1, 4], [3, 4], game_manip.board)  # King
-                game_manip.make_move(move)
+                game_manip.make_move(move, ai=True)
         else:
             if random.randint(0, 5) < 5:
                 move = Move([1, 3], [3, 3], game_manip.board)  # King
-                game_manip.make_move(move)
+                game_manip.make_move(move, ai=True)
             else:
                 if random.randint(0, 4) < 4:
                     move = Move([1, 4], [3, 4], game_manip.board)  # Queen
-                    game_manip.make_move(move)
+                    game_manip.make_move(move, ai=True)
                 else:
                     move = Move([1, 5], [3, 5], game_manip.board)  # Sicilian
-                    game_manip.make_move(move)
+                    game_manip.make_move(move, ai=True)
         return move
 
     def find_best_move(self, move_counter, game_manip, valid_moves, return_queue) -> None:
@@ -116,7 +116,7 @@ class AI:
             if (move_counter < 12 and str(move)[0] == "Q") and not (game_manip.board[3][4] == "bp"):
                 continue
             else:
-                game_manip.make_move(move)
+                game_manip.make_move(move, ai=True)
                 next_moves = game_manip.get_valid_moves()
                 score = - self.find_best_comparecent_move(move_counter, game_manip, next_moves, depth - 1, -beta, -alpha, -turn_multiplier)
 

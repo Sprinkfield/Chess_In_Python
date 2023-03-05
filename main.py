@@ -66,7 +66,7 @@ def endgame_stuff(language, text, game_screen, surrendered=False) -> None:
             elif text == language.b_win:
                 text = language.w_sur
 
-        DrawGame.draw_end_game_state(language, text, game_screen)
+        DrawGame().draw_end_game_state(language, text, game_screen)
         pygame.display.flip()  # Next frame.
 
 
@@ -348,7 +348,7 @@ def run_game() -> None:
 
                             for stored_move in valid_moves:
                                 if move == stored_move:
-                                    game_manip.make_move(stored_move)
+                                    game_manip.make_move(stored_move, game_screen, language, False)
                                     confirmed_move = move
                                     move_made = True
                                     square_selected = tuple()
@@ -398,7 +398,7 @@ def run_game() -> None:
                     ai_move = AI().find_random_move(valid_moves)
                     move = ai_move
                     print("Oh, I probably made a mistake!")
-                game_manip.make_move(ai_move)
+                game_manip.make_move(ai_move,  game_screen, language, True)
                 move_made = True
                 ai_is_thinking = False
                 confirmed_move = ai_move
@@ -411,6 +411,11 @@ def run_game() -> None:
 
         if game_manip.checkmate or Elo.score_board(game_manip, 0) < 100 or Elo.score_board(game_manip, 1) < 100:
             game_over = True
+            if Elo.score_board(game_manip, 0) < 100:
+                game_manip.white_to_move = True
+            elif Elo.score_board(game_manip, 1) < 100:
+                game_manip.white_to_move = False
+            
             if game_manip.white_to_move:
                 if gamemode == "rating":
                     if the_first_player:
@@ -447,7 +452,7 @@ def run_game() -> None:
                     }
                     write_config(new_data)
                 endgame_stuff(language, language.w_win, game_screen, surrendered)
-        elif game_manip.stalemate or (Elo.score_board(game_manip, 0) <= 103 and Elo.score_board(game_manip, 1) <= 103):
+        elif game_manip.stalemate or ((Elo.score_board(game_manip, 0) <= 103 and Elo.score_board(game_manip, 1) <= 103)):
             game_over = True
             if gamemode == "rating":
                 player_elo = Elo.calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)

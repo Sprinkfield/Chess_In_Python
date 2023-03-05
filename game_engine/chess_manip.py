@@ -1,5 +1,6 @@
 from game_engine.pieces_moves import Move, CastleRights
 from game_engine.game_objects import GameObjects
+from game_engine.draw_game import DrawGame
 
 
 class MainMenuButton:
@@ -23,8 +24,6 @@ class LangSettings:
             self.b_sur = "Black surrendered! White won"
             self.stale = "Stalemate! Draw"
             self.click = "Click any button to return to the Main Menu"
-            self.surrender = "Are you sure you want to surrender?"
-            self.confirm = "Confirm"
             # Main menu.
             self.main = "Main Menu"
             self.rating = "Play rating game"
@@ -38,6 +37,10 @@ class LangSettings:
             self.difficulty = "Difficulty level:"
             self.board_theme = "Board theme:"
             self.piece_set = "Piece set:"
+            # Else.
+            self.surrender = "Are you sure you want to surrender?"
+            self.confirm = "Confirm"
+            self.promotion = "Choose pawn promotion"
         elif lang == "rus":
             # Endgame.
             self.w_win = "Мат! Белые выиграли"
@@ -46,8 +49,6 @@ class LangSettings:
             self.b_sur = "Черные сдались! Белые победили"
             self.stale = "Пат! Ничья"
             self.click = "Нажмите любую кнопку, чтобы вернуться в Главное Меню"
-            self.surrender = "Вы уверены, что хотите сдаться?"
-            self.confirm = "Подтвердить"
             # Main menu.
             self.main = "Главное Меню"
             self.rating = "Играть в рейтинговую игру"
@@ -61,6 +62,10 @@ class LangSettings:
             self.difficulty = "Уровень сложности:"
             self.board_theme = "Тема доски:"
             self.piece_set = "Тема фигур:"
+            # Else.
+            self.surrender = "Вы уверены, что хотите сдаться?"
+            self.confirm = "Подтвердить"
+            self.promotion = "Выберите повышение пешки"
         elif lang == "ger":
             # Endgame.
             self.w_win = "Schachmatt! Weiß hat gewonnen"
@@ -69,8 +74,6 @@ class LangSettings:
             self.b_sur = "Schwarz hat aufgegeben! Weiß hat gewonnen"
             self.stale = "Patt! Unentschieden"
             self.click = "Klicken Sie auf eine beliebige Schaltfläche, um zum Hauptmenü zurückzukehren"
-            self.surrender = "Sind Sie sicher, dass Sie aufgeben wollen?"
-            self.confirm = "Bestätigen"
             # Main menu.
             self.main = "Hauptmenü"
             self.rating = "Bewertungsspiel spielen"
@@ -84,6 +87,10 @@ class LangSettings:
             self.difficulty = "Schwierigkeitsgrad:"
             self.board_theme = "Board-Design:"
             self.piece_set = "Stücksatz:"
+            # Else
+            self.surrender = "Sind Sie sicher, dass Sie aufgeben wollen?"
+            self.confirm = "Bestätigen"
+            self.promotion = "Pawn Promotion wählen"
         elif lang == "fra":
             # Endgame.
             self.w_win = "Échec et mat! Les blancs ont gagné"
@@ -92,8 +99,6 @@ class LangSettings:
             self.b_sur = "Les noirs se sont rendus ! Les blancs ont gagné"
             self.stale = "Impasse! Tirage au sort"
             self.click = "Cliquez sur n'importe quel bouton pour revenir au Menu Principal"
-            self.surrender = "Êtes-vous sûr de vouloir vous rendre?"
-            self.confirm = "Confirmer"
             # Main menu.
             self.main = "Menu Principal"
             self.rating = "Jouer au jeu d'évaluation"
@@ -107,6 +112,10 @@ class LangSettings:
             self.difficulty = "Niveau de difficulté:"
             self.board_theme = "Thème du tableau:"
             self.piece_set = "Ensemble de pièces:"
+            # Else.
+            self.surrender = "Êtes-vous sûr de vouloir vous rendre?"
+            self.confirm = "Confirmer"
+            self.promotion = "Choisissez la promotion de pion"
         elif lang == "chi":
             # Endgame.
             self.w_win = "将死！白方赢了"
@@ -115,8 +124,6 @@ class LangSettings:
             self.b_sur = "黑方投降！白方获胜"
             self.stale = "僵局！平局"
             self.click = "点击任意按钮返回主菜单"
-            self.surrender = "你确定要投降吗?"
-            self.confirm = "确认"
             # Main menu.
             self.main = "主菜单"
             self.rating = "玩评级游戏"
@@ -130,6 +137,10 @@ class LangSettings:
             self.difficulty = "难度等级"
             self.board_theme = "棋盘主题"
             self.piece_set = "棋子集"
+            # Else.
+            self.surrender = "你确定要投降吗?"
+            self.confirm = "确认"
+            self.promotion = "选择典当推广"
 
 
 class GameBoardState:
@@ -156,7 +167,7 @@ class GameBoardState:
         self.b_side_literal = "b"
         self.black_down = black_down
 
-    def make_move(self, move) -> str:
+    def make_move(self, move, screen=None, language=None, ai=None) -> str:
         self.board[move.start_row][move.start_col] = "--"
         self.board[move.end_row][move.end_col] = move.piece_moved
         self.move_log.append(move)
@@ -167,7 +178,10 @@ class GameBoardState:
         elif move.piece_moved == self.b_side_literal + "K":
             self.black_king_location = (move.end_row, move.end_col)
 
-        if move.is_pawn_promotion:
+        if move.is_pawn_promotion and not ai:
+            promote_type = DrawGame().promote_choice(screen, language, move.piece_moved[0])
+            self.board[move.end_row][move.end_col] = move.piece_moved[0] + promote_type
+        elif move.is_pawn_promotion and ai:
             self.board[move.end_row][move.end_col] = move.piece_moved[0] + "Q"
 
         if move.is_enpassant_move:
