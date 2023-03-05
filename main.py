@@ -8,6 +8,7 @@ from ai_engine.ai_main import AI
 import multiprocessing
 import pygame
 import random
+import time
 import sys
 
 
@@ -50,7 +51,7 @@ def write_config(new_data) -> None:
         file.write(line)
 
 
-def endgame_stuff(language, text, game_screen):
+def endgame_stuff(language, text, game_screen, surrendered=False) -> None:
     while True:
         for single_event in pygame.event.get():
             if single_event.type == pygame.QUIT:
@@ -58,11 +59,18 @@ def endgame_stuff(language, text, game_screen):
             # Mouse movement processing.
             elif single_event.type in [pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]:
                 sys.exit(run_game())
-        DrawGame.draw_end_game_state(language, text_line=text, game_screen=game_screen)
+        
+        if surrendered:
+            if text == language.w_win:
+                text = language.b_sur
+            elif text == language.b_win:
+                text = language.w_sur
+
+        DrawGame.draw_end_game_state(language, text, game_screen)
         pygame.display.flip()  # Next frame.
 
 
-def surrender(language, game_screen) -> None:
+def surrender_window(language, game_screen) -> bool:
     menu_open = True
     TEXT_SIZE = GameObjects.SCREENSIZE[1] // 30
     FOREGROUND_FONT_COLOUR = [180, 180, 190]
@@ -83,9 +91,10 @@ def surrender(language, game_screen) -> None:
             elif single_event.type == pygame.MOUSEBUTTONDOWN:
                     location = pygame.mouse.get_pos()
                     if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE // 1.2):
-                        bg_dimmed.set_alpha(255)
-                        game_screen.blit(bg_dimmed, (0, 0))
-                        return True
+                        menu_open = False
+                        # bg_dimmed.set_alpha(255)
+                        # game_screen.blit(bg_dimmed, (0, 0))
+                        return time.time()
 
         font_type = pygame.font.SysFont("Arial", TEXT_SIZE, True, False)
         text_object = font_type.render(language.surrender, False, pygame.Color(BACKGROUND_FONT_COLOUR))
@@ -102,7 +111,7 @@ def surrender(language, game_screen) -> None:
         game_screen.blit(text_object, text_location.move(2, 2))
 
         location = pygame.mouse.get_pos()
-        if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE // 1.2):
+        if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE / 0.8):
             text_object = font_type.render(language.confirm, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
             game_screen.blit(text_object, text_location.move(2, 2))
 
@@ -126,6 +135,8 @@ def run_game() -> None:
     ai_move_as_black = False
     black_down_flag = False
     in_main_menu = True
+    surrendered = False
+    surr_continue = False
 
     white_board = GameObjects.get_boards()[0]
     black_board = GameObjects.get_boards()[1]
@@ -297,7 +308,7 @@ def run_game() -> None:
         the_second_player = True
         ai_move_as_black = False
     else:
-        game_manip = GameBoardState(board_type=custom_board, black_down=True)
+        game_manip = GameBoardState(board_type=custom_board, black_down=False)
         valid_moves = game_manip.get_valid_moves()
         # Change if its needed.
         the_first_player = True
@@ -305,7 +316,6 @@ def run_game() -> None:
         ai_move_as_black = False
         move_counter = 100
 
-    game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
     confirmed_move = Move((0, 0), (1, 1), game_manip.board)
 
     while game_running_state:
@@ -350,8 +360,14 @@ def run_game() -> None:
                                 player_clicks = [square_selected]
             elif single_event.type == pygame.KEYDOWN:
                 if single_event.key == pygame.K_ESCAPE:
-                    if surrender(language, game_screen):
+                    if surrender_window(language, game_screen):
                         game_manip.checkmate = True
+                        surrendered = True
+                        surr_continue = True
+
+        if surr_continue:
+            surr_continue = False
+            continue
 
         if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
@@ -412,7 +428,7 @@ def run_game() -> None:
                         "last_p_side": last_p_side,
                     }
                     write_config(new_data)
-                endgame_stuff(language, language.b_win, game_screen)
+                endgame_stuff(language, language.b_win, game_screen, surrendered)
             else:
                 if gamemode == "rating":
                     if the_first_player:
@@ -430,8 +446,8 @@ def run_game() -> None:
                         "last_p_side": last_p_side,
                     }
                     write_config(new_data)
-                endgame_stuff(language, language.w_win, game_screen)
-        elif game_manip.stalemate or Elo.score_board(game_manip, last_p_side) <= 103:
+                endgame_stuff(language, language.w_win, game_screen, surrendered)
+        elif game_manip.stalemate or (Elo.score_board(game_manip, 0) <= 103 and Elo.score_board(game_manip, 1) <= 103):
             game_over = True
             if gamemode == "rating":
                 player_elo = Elo.calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)

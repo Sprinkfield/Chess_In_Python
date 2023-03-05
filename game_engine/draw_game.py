@@ -21,7 +21,6 @@ BLACK_SQUAERS_COLOUR = "dark cyan"
 ALPHABET = GameObjects.ALPHABET
 BOLD_TEXT_SETTINGS = True
 ANIMATION_SPEED = 1
-ENDGAME_TEXT_SIZE = int(GameObjects.SCREENSIZE[1] / 22)
 FOREGROUND_FONT_COLOUR = [180, 180, 190]
 BACKGROUND_FONT_COLOUR = [0, 0, 0]
 LANGUAGES = GameObjects.LANGUAGES
@@ -189,6 +188,7 @@ class DrawGame:
         game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
 
     def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False, p_theme_num=0, b_theme_num=0) -> None:
+        game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
         self.draw_game(game_screen, p_theme_num, b_theme_num)
         self.hightlighting_possible_moves(game_screen, game_manip, valid_moves, square_selected)
         self.draw_pieces(game_screen, game_manip.board, p_theme_num, b_theme_num)
@@ -250,16 +250,21 @@ class DrawGame:
                 white_colour = not white_colour
 
     def draw_end_game_state(language, text_line, game_screen) -> None:
-        font_type = pygame.font.SysFont("Arial", ENDGAME_TEXT_SIZE, True, False)
+        endgame_text_size = int(GameObjects.SCREENSIZE[1] / 22)
+
+        if language.lang_name in ["ger", "fra"]:
+            endgame_text_size = int(endgame_text_size / 1.4)
+
+        font_type = pygame.font.SysFont("Arial", endgame_text_size, True, False)
         text_object = font_type.render(text_line, False, pygame.Color(BACKGROUND_FONT_COLOUR))
-        text_location = pygame.Rect(0, int(B_HEIGHT/2 - ENDGAME_TEXT_SIZE / 1.2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        text_location = pygame.Rect(0, int(B_HEIGHT/2 - endgame_text_size / 1.2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
         game_screen.blit(text_object, text_location)
         text_object = font_type.render(text_line, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
         game_screen.blit(text_object, text_location.move(2, 2))
 
-        font_type = pygame.font.SysFont("Arial", ENDGAME_TEXT_SIZE // 2, True, False)
+        font_type = pygame.font.SysFont("Arial", endgame_text_size // 2, True, False)
         text_object = font_type.render(language.click, False, pygame.Color(BACKGROUND_FONT_COLOUR))
-        text_location = pygame.Rect(0, int(B_HEIGHT/2 + ENDGAME_TEXT_SIZE // 2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
+        text_location = pygame.Rect(0, int(B_HEIGHT/2 + endgame_text_size // 2), B_WIDTH, B_HEIGHT).move(B_WIDTH/2 - text_object.get_width()/2, 0)
         game_screen.blit(text_object, text_location)
         text_object = font_type.render(language.click, False, pygame.Color(tuple(map(lambda x: x + 50, FOREGROUND_FONT_COLOUR))))
         game_screen.blit(text_object, text_location.move(2, 2))

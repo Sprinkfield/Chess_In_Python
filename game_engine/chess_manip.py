@@ -19,6 +19,8 @@ class LangSettings:
             # Endgame.
             self.w_win = "Checkmate! White won"
             self.b_win = "Checkmate! Black won"
+            self.w_sur = "White surrendered! Black won"
+            self.b_sur = "Black surrendered! White won"
             self.stale = "Stalemate! Draw"
             self.click = "Click any button to return to the Main Menu"
             self.surrender = "Are you sure you want to surrender?"
@@ -40,6 +42,8 @@ class LangSettings:
             # Endgame.
             self.w_win = "Мат! Белые выиграли"
             self.b_win = "Мат! Черные выиграли"
+            self.w_sur = "Белые сдались! Черные победили"
+            self.b_sur = "Черные сдались! Белые победили"
             self.stale = "Пат! Ничья"
             self.click = "Нажмите любую кнопку, чтобы вернуться в Главное Меню"
             self.surrender = "Вы уверены, что хотите сдаться?"
@@ -61,6 +65,8 @@ class LangSettings:
             # Endgame.
             self.w_win = "Schachmatt! Weiß hat gewonnen"
             self.b_win = "Schachmatt! Schwarz hat gewonnen"
+            self.w_sur = "Weiß hat aufgegeben! Schwarz hat gewonnen"
+            self.b_sur = "Schwarz hat aufgegeben! Weiß hat gewonnen"
             self.stale = "Patt! Unentschieden"
             self.click = "Klicken Sie auf eine beliebige Schaltfläche, um zum Hauptmenü zurückzukehren"
             self.surrender = "Sind Sie sicher, dass Sie aufgeben wollen?"
@@ -82,6 +88,8 @@ class LangSettings:
             # Endgame.
             self.w_win = "Échec et mat! Les blancs ont gagné"
             self.b_win = "Échec et mat! Les noirs ont gagné"
+            self.w_sur = "Les blancs se sont rendus ! Les noirs ont gagné"
+            self.b_sur = "Les noirs se sont rendus ! Les blancs ont gagné"
             self.stale = "Impasse! Tirage au sort"
             self.click = "Cliquez sur n'importe quel bouton pour revenir au Menu Principal"
             self.surrender = "Êtes-vous sûr de vouloir vous rendre?"
@@ -103,6 +111,8 @@ class LangSettings:
             # Endgame.
             self.w_win = "将死！白方赢了"
             self.b_win = "将死！黑方赢了"
+            self.w_sur = "白方投降！黑方获胜"
+            self.b_sur = "黑方投降！白方获胜"
             self.stale = "僵局！平局"
             self.click = "点击任意按钮返回主菜单"
             self.surrender = "你确定要投降吗?"
