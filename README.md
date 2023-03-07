@@ -14,7 +14,7 @@
 
 
 ## Requirements for launch
-You need Python 3.7+ and the following modules: ctypes, subprocess, multiprocessing, random (built-in Python modules); and [pygame](https://pypi.org/project/pygame/).
+You need Python 3.10+ and the following modules: ctypes, subprocess, multiprocessing, random (built-in Python modules); and [pygame](https://pypi.org/project/pygame/).
 
 If you don't have the pygame package, use pip (in a terminal or command line) to install it:
 ```bash
