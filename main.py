@@ -26,6 +26,9 @@ LANGUAGE_NAME = GameObjects.LANGUAGES
 PIECE_THEMES_PACK = GameObjects.PIECE_THEMES_PACK
 BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
 B_B_WIDTH = GameObjects.SCREENSIZE[1] * 2
+pygame.mixer.init()
+CAPTURE_SOUND = pygame.mixer.Sound('sounds/capture.wav')
+MOVE_SOUND = pygame.mixer.Sound('sounds/move.wav')
 
 
 def get_config() -> dict:
@@ -344,6 +347,7 @@ def run_game() -> None:
 
                             for stored_move in valid_moves:
                                 if move == stored_move:
+                                    not_cap_move = game_manip.board[player_clicks[1][0]][player_clicks[1][1]] != "--"
                                     game_manip.make_move(stored_move, game_screen, language, False)
                                     confirmed_move = move
                                     move_made = True
@@ -404,6 +408,10 @@ def run_game() -> None:
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
+            if not_cap_move:
+                CAPTURE_SOUND.play()
+            else:
+                MOVE_SOUND.play()
 
         if game_manip.checkmate or Elo.score_board(game_manip, 0) < 100 or Elo.score_board(game_manip, 1) < 100:
             game_over = True
