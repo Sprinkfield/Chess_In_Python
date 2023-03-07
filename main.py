@@ -4,7 +4,7 @@ from game_engine.game_objects import GameObjects
 from game_engine.draw_game import DrawGame
 from game_engine.pieces_moves import Move
 from game_engine.elo_system import Elo
-from ai_engine.ai_main import AI
+from game_engine.ai_main import AI
 import multiprocessing
 import pygame
 import random
@@ -27,8 +27,8 @@ PIECE_THEMES_PACK = GameObjects.PIECE_THEMES_PACK
 BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
 B_B_WIDTH = GameObjects.SCREENSIZE[1] * 2
 pygame.mixer.init()
-CAPTURE_SOUND = pygame.mixer.Sound('sounds/capture.wav')
-MOVE_SOUND = pygame.mixer.Sound('sounds/move.wav')
+CAPTURE_SOUND = pygame.mixer.Sound("sounds/capture.wav")
+MOVE_SOUND = pygame.mixer.Sound("sounds/move.wav")
 
 
 def get_config() -> dict:
@@ -77,8 +77,8 @@ def surrender_window(language, game_screen) -> bool:
     FOREGROUND_FONT_COLOUR = [180, 180, 190]
     BACKGROUND_FONT_COLOUR = [0, 0, 0]
     bg_dimmed = pygame.Surface((B_WIDTH, B_HEIGHT))
-    bg_dimmed.set_alpha(220)
-    bg_dimmed.fill(pygame.Color(10, 10, 10, 200))
+    bg_dimmed.set_alpha(200)
+    bg_dimmed.fill(pygame.Color(10, 10, 10))
     game_screen.blit(bg_dimmed, (0, 0))
     while menu_open:
         for single_event in pygame.event.get():
@@ -136,6 +136,7 @@ def run_game() -> None:
     in_main_menu = True
     surrendered = False
     surr_continue = False
+    not_cap_move = False
 
     white_board = GameObjects.get_boards()[0]
     black_board = GameObjects.get_boards()[1]
