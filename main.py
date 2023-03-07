@@ -8,7 +8,6 @@ from ai_engine.ai_main import AI
 import multiprocessing
 import pygame
 import random
-import time
 import sys
 
 
@@ -29,11 +28,12 @@ BOARD_THEMES_PACK = GameObjects.BOARD_THEMES_PACK
 B_B_WIDTH = GameObjects.SCREENSIZE[1] * 2
 
 
-def get_config() -> None:
+def get_config() -> dict:
+    data_dict = dict()
     with open("config.txt", "r") as file:
         data = file.read().split()
         data = [line.split("=") for line in data]
-    data_dict = dict()
+
     for key, value in data:
         value = int(value)
         data_dict[key] = value
@@ -44,11 +44,9 @@ def write_config(new_data) -> None:
     data = []
     for key, value in new_data.items():
         data.append(f"{key}={value}")
-    line = ""
-    for element in data:
-        line += element + "\n"
+
     with open("config.txt", "w") as file:
-        file.write(line)
+        file.write("\n".join(data) + "\n")
 
 
 def endgame_stuff(language, text, game_screen, surrendered=False) -> None:
@@ -92,9 +90,7 @@ def surrender_window(language, game_screen) -> bool:
                     location = pygame.mouse.get_pos()
                     if int(B_HEIGHT/2 + TEXT_SIZE // 2) < location[1] < int(B_HEIGHT/2 + TEXT_SIZE // 2) + int(TEXT_SIZE // 1.2):
                         menu_open = False
-                        # bg_dimmed.set_alpha(255)
-                        # game_screen.blit(bg_dimmed, (0, 0))
-                        return time.time()
+                        return True
 
         font_type = pygame.font.SysFont("Arial", TEXT_SIZE, True, False)
         text_object = font_type.render(language.surrender, False, pygame.Color(BACKGROUND_FONT_COLOUR))

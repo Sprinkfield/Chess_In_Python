@@ -2,7 +2,10 @@ class Elo:
     def calculate_elo(game_manip, elo, result, side, turns) -> int:
         score = Elo.score_board(game_manip, side)
         side = 0**side  # side: 0 -> 1, 1 -> 0.
-        new_elo = elo + 2*((0**side)*(score/turns) + (20*score/turns)**result - (0**abs(result))*(4*score/turns) - (20*score/turns)**(-result))
+        try:
+            new_elo = elo + 2*((0**side)*(score/turns) + (20*score/turns)**result - (0**abs(result))*(4*score/turns) - (20*score/turns)**(-result))
+        except:
+            new_elo = elo
         return int(new_elo) if new_elo > 0 else 0
 
     def set_difficulty(elo) -> int:
