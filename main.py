@@ -399,6 +399,7 @@ def run_game() -> None:
                     ai_move = AI().find_random_move(valid_moves)
                     move = ai_move
                     print("Oh, I probably made a mistake!")
+                not_cap_move = game_manip.board[ai_move.end_row][ai_move.end_col] != "--"
                 game_manip.make_move(ai_move,  game_screen, language, True)
                 move_made = True
                 ai_is_thinking = False
