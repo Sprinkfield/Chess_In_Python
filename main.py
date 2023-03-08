@@ -40,6 +40,7 @@ def get_config() -> dict:
     for key, value in data:
         value = int(value)
         data_dict[key] = value
+
     return data_dict
 
 
@@ -53,6 +54,7 @@ def write_config(new_data) -> None:
 
 
 def endgame_stuff(language, text, game_screen, surrendered=False) -> None:
+    DrawGame().dim_bg(game_screen)
     while True:
         for single_event in pygame.event.get():
             if single_event.type == pygame.QUIT:
@@ -76,10 +78,7 @@ def surrender_window(language, game_screen) -> bool:
     TEXT_SIZE = GameObjects.SCREENSIZE[1] // 30
     FOREGROUND_FONT_COLOUR = [180, 180, 190]
     BACKGROUND_FONT_COLOUR = [0, 0, 0]
-    bg_dimmed = pygame.Surface((B_WIDTH, B_HEIGHT))
-    bg_dimmed.set_alpha(200)
-    bg_dimmed.fill(pygame.Color(10, 10, 10))
-    game_screen.blit(bg_dimmed, (0, 0))
+    DrawGame().dim_bg(game_screen, 200)
     while menu_open:
         for single_event in pygame.event.get():
             if single_event.type == pygame.QUIT:

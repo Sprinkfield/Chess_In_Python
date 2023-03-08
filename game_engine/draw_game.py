@@ -39,8 +39,15 @@ class DrawGame:
         IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
         IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
+    def dim_bg(self, game_screen, alpha=75):
+        bg_dimmed = pygame.Surface((B_WIDTH, B_HEIGHT))
+        bg_dimmed.set_alpha(alpha)
+        bg_dimmed.fill(pygame.Color(10, 10, 10))
+        game_screen.blit(bg_dimmed, (0, 0))
+
     def draw_main_menu(self, game_screen, language, selected_button) -> None:
         game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
+        self.dim_bg(game_screen)
 
         font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
         font_type_main = pygame.font.SysFont("Arial", FONT_SIZE * 2, True, False)
@@ -91,6 +98,7 @@ class DrawGame:
 
     def draw_settings_menu(self, game_screen, language, level, p_theme_num, b_theme_num, selected_button) -> None:
         game_screen.blit(pygame.transform.scale(MAIN_MENU_BACKGROUND, (B_WIDTH, B_HEIGHT)), (0, 0))
+        self.dim_bg(game_screen)
         dy = 2.6
 
         font_type = pygame.font.SysFont("Arial", FONT_SIZE, True, False)
