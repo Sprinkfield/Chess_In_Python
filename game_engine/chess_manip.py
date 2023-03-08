@@ -31,6 +31,7 @@ class LangSettings:
             self.p_black = "Play as black"
             self.p_vs_f = "Play against a friend"
             self.custom_b = "Play with a custom board"
+            self.exit = "Exit the game"
             # Settings.
             self.settings = "Settings"
             self.language = "Language:"
@@ -56,6 +57,7 @@ class LangSettings:
             self.p_black = "Играть за черных"
             self.p_vs_f = "Играть против друга"
             self.custom_b = "Игра co спец. доской"
+            self.exit = "Выйти из игры"
             # Settings.
             self.settings = "Настройки"
             self.language = "Язык:"
@@ -81,6 +83,7 @@ class LangSettings:
             self.p_black = "Spiele als Schwarz"
             self.p_vs_f = "Spiele gegen einen Freund"
             self.custom_b = "Besonderes Spiel"
+            self.exit = "Spiel beenden"
             # Settings.
             self.settings = "Einstellungen"
             self.language = "Sprache:"
@@ -106,6 +109,7 @@ class LangSettings:
             self.p_black = "Jouer en noir"
             self.p_vs_f = "Jouer contre un ami"
             self.custom_b = "Jeu spécial"
+            self.exit = "Quitter le jeu"
             # Settings.
             self.settings = "Paramètres"
             self.language = "Langue:"
@@ -131,6 +135,7 @@ class LangSettings:
             self.p_black = "扮演黑人"
             self.p_vs_f = "和朋友对战"
             self.custom_b = "玩自定义棋盘"
+            self.exit = "退出游戏"
             # Settings.
             self.settings = "设置"
             self.language = "语言:"

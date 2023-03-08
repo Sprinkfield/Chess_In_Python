@@ -177,7 +177,10 @@ def run_game() -> None:
                         elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
                             gamemode = "play_with_a_friend"
                         elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                            gamemode = "play_with_a_custom_board"
+                            if DEBUG_MODE:
+                                gamemode = "play_with_a_custom_board"
+                            else:
+                                sys.exit()
                         
                         if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
                             lang_num = (lang_num + 1) % len(LANGUAGE_NAME)
