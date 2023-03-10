@@ -154,6 +154,7 @@ class GameBoardState:
 
     def __init__(self, board_type=None, black_down=False) -> None:
         self.board = board_type
+        self.black_down = black_down
         self.white_to_move = True
         self.is_enpassant_possible = tuple()
         self.is_enpassant_possible_log = [self.is_enpassant_possible]
@@ -163,6 +164,8 @@ class GameBoardState:
         self.move_log = list()
         self.white_king_location = (GameObjects.DIMENSIONS - 1, GameObjects.DIMENSIONS // 2)
         self.black_king_location = (0, GameObjects.DIMENSIONS // 2)
+        if black_down:
+            self.white_king_location, self.black_king_location = self.black_king_location, self.white_king_location
         self.checkmate = False
         self.stalemate = False
         self.in_check = False
@@ -170,7 +173,6 @@ class GameBoardState:
         self.checks = list()
         self.w_side_literal = "w"
         self.b_side_literal = "b"
-        self.black_down = black_down
 
     def make_move(self, move, screen=None, language=None, ai=None) -> str:
         self.board[move.start_row][move.start_col] = "--"
@@ -317,7 +319,7 @@ class GameBoardState:
                     moves.append(Move((row, col), (row + move_amount, col - 1), self.board))
                 if (row + move_amount, col - 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
-                    if king_row == row:
+                    if king_row == row and not self.black_down:
                         if king_col < col:
                             inside_range = range(king_col + 1, col - 1)
                             outside_range = range(col + 1, 8)
@@ -346,7 +348,7 @@ class GameBoardState:
                     moves.append(Move((row, col), (row + move_amount, col + 1), self.board))
                 if (row + move_amount, col + 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
-                    if king_row == row:
+                    if king_row == row and not self.black_down:
                         if king_col < col:
                             inside_range = range(king_col + 1, col)
                             outside_range = range(col + 2, 8)
@@ -600,7 +602,7 @@ class GameBoardState:
                     elif end_piece[0] == enemy_colour:
                         enemy_type = end_piece[1]
                         if (0 <= j <= 3 and enemy_type == "R") or (4 <= j <= 7 and enemy_type == "B") or \
-                            (i == 1 and enemy_type == "p" and \
+                            (i == 1 and (enemy_type == "p" and not self.black_down) and \
                             ((enemy_colour == self.w_side_literal and 6 <= j <= 7) or \
                             (enemy_colour == self.b_side_literal and 4 <= j <= 5))) or \
                             (enemy_type == "Q") or (i == 1 and enemy_type == "K"):
@@ -657,8 +659,7 @@ class GameBoardState:
                     for i in range(1, 8):
                         valid_square = (king_row + check[2] * i, king_col + check[3] * i)
                         valid_squares.append(valid_square)
-                        if valid_square[0] == check_row and valid_square[
-                            1] == check_col:
+                        if valid_square[0] == check_row and valid_square[1] == check_col:
                             break
 
                 for i in range(len(moves) - 1, -1, -1):

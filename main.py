@@ -253,7 +253,8 @@ def run_game() -> None:
             elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
                 selected_button = 2
             elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - FONT_DELTA <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE + FONT_DELTA:
-                chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                # chosen_button = MainMenuButton(x=B_WIDTH//2 - int(B_B_WIDTH / 2), y=TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU - 2, width=int(B_B_WIDTH))
+                pass
             elif B_WIDTH - BUTTON_SIZE <= location[0] <= B_B_WIDTH and 0 <= location[1] <= BUTTON_SIZE:
                 chosen_button = MainMenuButton(x=B_WIDTH - BUTTON_SIZE, y=0, width=BUTTON_SIZE, height=BUTTON_SIZE, is_text=False)
             elif 0 <= location[0] <= BUTTON_SIZE and 0 <= location[1] <= BUTTON_SIZE:
@@ -284,7 +285,6 @@ def run_game() -> None:
         else:
             black_down_flag = True
             game_manip = GameBoardState(board_type=black_board, black_down=True)
-            game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True if last_p_side == 0 else False
         the_second_player = False if last_p_side == 0 else True
@@ -300,11 +300,10 @@ def run_game() -> None:
         game_manip = GameBoardState(board_type=black_board, black_down=True)
         the_first_player = False
         the_second_player = True
-        game_manip.white_king_location, game_manip.black_king_location = game_manip.black_king_location, game_manip.white_king_location
         valid_moves = game_manip.get_valid_moves()
         ai_move_as_black = False
     elif gamemode == "play_with_a_friend":
-        game_manip = GameBoardState(board_type=white_board)
+        game_manip = GameBoardState(board_type=white_board, black_down=False)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = True
