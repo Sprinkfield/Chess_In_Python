@@ -241,13 +241,20 @@ class GameBoardState:
             self.castle_rights_log.pop()
             self.current_castling_rights = self.castle_rights_log[-1]
 
-            if move.is_castle_move:
+            if move.is_castle_move and not self.black_down:
                 if move.end_col - move.start_col == 2:
                     self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 1]
                     self.board[move.end_row][move.end_col - 1] = '--'
                 else:
                     self.board[move.end_row][move.end_col - 2] = self.board[move.end_row][move.end_col + 1]
                     self.board[move.end_row][move.end_col + 1] = '--'
+            elif move.is_castle_move and self.black_down:
+                if move.end_col - move.start_col == -2:
+                    self.board[move.end_row][move.end_col - 1] = self.board[move.end_row][move.end_col + 1]
+                    self.board[move.end_row][move.end_col + 1] = "--"
+                else:
+                    self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 2]
+                    self.board[move.end_row][move.end_col - 2] = "--"
 
             self.checkmate = False
             self.stalemate = False
