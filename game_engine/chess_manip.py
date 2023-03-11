@@ -319,7 +319,7 @@ class GameBoardState:
                     moves.append(Move((row, col), (row + move_amount, col - 1), self.board))
                 if (row + move_amount, col - 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
-                    if king_row == row and not self.black_down:
+                    if king_row == row:
                         if king_col < col:
                             inside_range = range(king_col + 1, col - 1)
                             outside_range = range(col + 1, 8)
@@ -348,7 +348,7 @@ class GameBoardState:
                     moves.append(Move((row, col), (row + move_amount, col + 1), self.board))
                 if (row + move_amount, col + 1) == self.is_enpassant_possible:
                     attacking_piece = blocking_piece = False
-                    if king_row == row and not self.black_down:
+                    if king_row == row:
                         if king_col < col:
                             inside_range = range(king_col + 1, col)
                             outside_range = range(col + 2, 8)
