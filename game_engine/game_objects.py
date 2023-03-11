@@ -29,7 +29,7 @@ class GameObjects:
     GAP_IN_MAIN_MENU = int(FONT_SIZE * 2)
     LANGUAGES = ["eng", "rus", "ger", "fra"]
     PIECE_THEMES_PACK = ["default", "pixel"]  # You can add piece_custom inside this list.
-    BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r"]  # You can add board_custom inside this list.
+    BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r", "board_pixel"]  # You can add board_custom inside this list.
 
     def get_boards() -> tuple:
         with open("game_engine/boards.txt", "r") as file:
@@ -125,5 +125,5 @@ class GameObjects:
         [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
         [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
         [0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.1, 0.1],
-        [0.1, 0.1, 0.9, 0.1, 0.1, 0.1, 1, 0.1]
+        [0.1, 0.1, 1.2, 0.1, 0.1, 0.1, 1.5, 0.1]
     ]

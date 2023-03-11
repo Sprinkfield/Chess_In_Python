@@ -4,9 +4,9 @@ class Elo:
         side = 0**side  # side: 0 -> 1, 1 -> 0.
         try:
             new_elo = elo + 2*((0**side)*(score/turns) + (20*score/turns)**result - (0**abs(result))*(4*score/turns) - (20*score/turns)**(-result))
-        except:
+        except:  # Division by zero.
             new_elo = elo
-        return int(new_elo) if new_elo > 0 else 0
+        return (int(new_elo) if new_elo > 0 else 0) if turns > 2 else elo
 
     def set_difficulty(elo) -> int:
         if elo < 1000:

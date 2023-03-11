@@ -541,7 +541,7 @@ class GameBoardState:
                     if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
                         moves.append(Move((row, col), (row, col - 2), self.board, is_castle_move=True))
         except:
-            print("Error!")
+            print("Error! (Castle Moves)")
 
     def get_queenside_castle_moves(self, row, col, moves) -> None:
         try:
@@ -554,7 +554,7 @@ class GameBoardState:
                     if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
                         moves.append(Move((row, col), (row, col + 2), self.board, is_castle_move=True))
         except:
-            print("Error!")
+            print("Error! (Castle Moves)")
 
     def square_under_attack(self, row, col) -> bool:
         self.white_to_move = not self.white_to_move

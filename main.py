@@ -17,6 +17,7 @@ DEBUG_MODE = GameObjects.DEBUG_MODE
 FONT_SIZE = GameObjects.FONT_SIZE
 FONT_DELTA = GameObjects.FONT_DELTA
 GAP_IN_MAIN_MENU = GameObjects.GAP_IN_MAIN_MENU
+LETTER_BORDER_SIZE = int(GameObjects.SCREENSIZE[1] / 36)
 B_WIDTH = B_HEIGHT = GameObjects.B_HEIGHT
 BORDER_SIZE = GameObjects.BORDER_SIZE
 SQUARE_SIZE = GameObjects.SQUARE_SIZE
@@ -51,6 +52,18 @@ def write_config(new_data) -> None:
 
     with open("config.txt", "w") as file:
         file.write("\n".join(data) + "\n")
+
+
+def write_new_data(difficulty_level, p_theme_num, b_theme_num, lang_num, player_elo, last_p_side) -> None:
+    new_data = {
+        "difficulty_level": difficulty_level,
+        "p_theme_num": p_theme_num,
+        "b_theme_num": b_theme_num,
+        "lang_num": lang_num,
+        "player_elo": player_elo,
+        "last_p_side": last_p_side,
+    }
+    write_config(new_data)
 
 
 def endgame_stuff(language, text, game_screen, surrendered=False) -> None:
@@ -367,10 +380,6 @@ def run_game() -> None:
                         surrendered = True
                         surr_continue = True
 
-        if surr_continue:
-            surr_continue = False
-            continue
-
         if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
             ai_move_as_black = False
@@ -411,10 +420,15 @@ def run_game() -> None:
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
+            surr_continue = True  # Do not pay attention.
             if not_cap_move:
                 CAPTURE_SOUND.play()
             else:
                 MOVE_SOUND.play()
+        
+        if surr_continue:
+            surr_continue = False
+            continue
 
         if game_manip.checkmate or Elo.score_board(game_manip, 0) < 100 or Elo.score_board(game_manip, 1) < 100:
             game_over = True
@@ -430,16 +444,8 @@ def run_game() -> None:
                     else:
                         result = 1
                     player_elo = Elo.calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
-                    last_p_side = (last_p_side + 1) % 2
-                    new_data = {
-                        "difficulty_level": difficulty_level,
-                        "p_theme_num": p_theme_num,
-                        "b_theme_num": b_theme_num,
-                        "lang_num": lang_num,
-                        "player_elo": player_elo,
-                        "last_p_side": last_p_side,
-                    }
-                    write_config(new_data)
+                    last_p_side = (last_p_side + 1) % 2 if move_counter > 2 else last_p_side
+                    write_new_data(difficulty_level, p_theme_num, b_theme_num, lang_num, player_elo, last_p_side)
                 endgame_stuff(language, language.b_win, game_screen, surrendered)
             else:
                 if gamemode == "rating":
@@ -448,31 +454,15 @@ def run_game() -> None:
                     else:
                         result = -1
                     player_elo = Elo.calculate_elo(game_manip, player_elo, result, last_p_side, move_counter)
-                    last_p_side = (last_p_side + 1) % 2
-                    new_data = {
-                        "difficulty_level": difficulty_level,
-                        "p_theme_num": p_theme_num,
-                        "b_theme_num": b_theme_num,
-                        "lang_num": lang_num,
-                        "player_elo": player_elo,
-                        "last_p_side": last_p_side,
-                    }
-                    write_config(new_data)
+                    last_p_side = (last_p_side + 1) % 2 if move_counter > 2 else last_p_side
+                    write_new_data(difficulty_level, p_theme_num, b_theme_num, lang_num, player_elo, last_p_side)
                 endgame_stuff(language, language.w_win, game_screen, surrendered)
         elif game_manip.stalemate or ((Elo.score_board(game_manip, 0) <= 103 and Elo.score_board(game_manip, 1) <= 103)):
             game_over = True
             if gamemode == "rating":
                 player_elo = Elo.calculate_elo(game_manip, player_elo, 0, last_p_side, move_counter)
                 last_p_side = (last_p_side + 1) % 2
-                new_data = {
-                    "difficulty_level": difficulty_level,
-                    "p_theme_num": p_theme_num,
-                    "b_theme_num": b_theme_num,
-                    "lang_num": lang_num,
-                    "player_elo": player_elo,
-                    "last_p_side": last_p_side,
-                }
-                write_config(new_data)
+                write_new_data(difficulty_level, p_theme_num, b_theme_num, lang_num, player_elo, last_p_side)
             endgame_stuff(language, language.stale, game_screen)
 
         if move_counter >= 1 and (gamemode != "play_with_a_custom_board" or move_counter > 100):
@@ -481,6 +471,13 @@ def run_game() -> None:
             square.fill(pygame.Color("blue"))
             game_screen.blit(square, (BORDER_SIZE + confirmed_move.end_col*SQUARE_SIZE, BORDER_SIZE + confirmed_move.end_row*SQUARE_SIZE))
             game_screen.blit(square, (BORDER_SIZE + confirmed_move.start_col*SQUARE_SIZE, BORDER_SIZE + confirmed_move.start_row*SQUARE_SIZE))
+
+        if gamemode == "rating":
+            my_font = pygame.font.SysFont('Arial', int(LETTER_BORDER_SIZE/1.6))
+            text_surface = my_font.render(" Elo", True, "grey")
+            game_screen.blit(text_surface, (0, 0))
+            text_surface = my_font.render(str(player_elo), True, "grey")
+            game_screen.blit(text_surface, (0, int(LETTER_BORDER_SIZE/1.6)))
 
         pygame.display.flip()  # Next frame.
 
