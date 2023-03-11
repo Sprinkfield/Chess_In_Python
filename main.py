@@ -303,7 +303,7 @@ def run_game() -> None:
         valid_moves = game_manip.get_valid_moves()
         ai_move_as_black = False
     elif gamemode == "play_with_a_friend":
-        game_manip = GameBoardState(board_type=black_board, black_down=True)
+        game_manip = GameBoardState(board_type=white_board, black_down=False)
         valid_moves = game_manip.get_valid_moves()
         the_first_player = True
         the_second_player = True
