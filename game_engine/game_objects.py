@@ -15,7 +15,7 @@ class GameObjects:
         SCREENSIZE = tuple(map(int, output.split()[0].split(b'x')))
     
     # Constants
-    DEBUG_MODE = True
+    DEBUG_MODE = False
     BORDER_SIZE = int(SCREENSIZE[1] // 27)
     B_WIDTH = B_HEIGHT = int(SCREENSIZE[1]*0.7) + 4 * BORDER_SIZE
     DIMENSIONS = 8
