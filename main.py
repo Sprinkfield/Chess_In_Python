@@ -147,7 +147,7 @@ def run_game() -> None:
     black_down_flag = False
     in_main_menu = True
     surrendered = False
-    surr_continue = False
+    skip_frame = False
     not_cap_move = False
 
     white_board = GameObjects.get_boards()[0]
@@ -333,7 +333,7 @@ def run_game() -> None:
     confirmed_move = Move((0, 0), (1, 1), game_manip.board)
 
     while game_running_state:
-        DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, black_down_flag, p_theme_num, b_theme_num)
+        DrawGame().draw_game_manip(game_screen, game_manip, valid_moves, square_selected, gamemode, player_elo, black_down_flag, p_theme_num, b_theme_num)
         game_timer.tick(MAXIMUM_FRAMES_PER_SECOND_VALUE)
 
         is_now_human_turn = (game_manip.white_to_move and the_first_player) or (not game_manip.white_to_move and the_second_player)
@@ -368,8 +368,6 @@ def run_game() -> None:
                                     move_made = True
                                     square_selected = tuple()
                                     player_clicks = list()
-                                    if DEBUG_MODE:
-                                        print(move_counter)
 
                             if not move_made:
                                 player_clicks = [square_selected]
@@ -378,7 +376,7 @@ def run_game() -> None:
                     if surrender_window(language, game_screen):
                         game_manip.checkmate = True
                         surrendered = True
-                        surr_continue = True
+                        skip_frame = True
 
         if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
@@ -420,14 +418,16 @@ def run_game() -> None:
             valid_moves = game_manip.get_valid_moves()
             move_made = False
             move_counter += 1
-            surr_continue = True  # Do not pay attention.
+            skip_frame = True
+            if DEBUG_MODE:
+                print(f"Move counter: {move_counter}")
             if not_cap_move:
                 CAPTURE_SOUND.play()
             else:
                 MOVE_SOUND.play()
         
-        if surr_continue:
-            surr_continue = False
+        if skip_frame:
+            skip_frame = False
             continue
 
         if game_manip.checkmate or Elo.score_board(game_manip, 0) < 100 or Elo.score_board(game_manip, 1) < 100:

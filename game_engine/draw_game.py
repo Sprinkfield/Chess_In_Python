@@ -36,8 +36,8 @@ class DrawGame:
         for piece in GameObjects.names_of_pieces:
             IMAGES[piece] = pygame.transform.scale(pygame.image.load(f"images/{PIECE_THEMES_PACK[p_theme_num]}/{piece}.png"), (SQUARE_SIZE, SQUARE_SIZE))
         
-        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zwhite_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
-        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zblack_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["white_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/white_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES["black_square"] = pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/black_square.png"), (SQUARE_SIZE, SQUARE_SIZE))
 
     def dim_bg(self, game_screen, alpha=75):
         bg_dimmed = pygame.Surface((B_WIDTH, B_HEIGHT))
@@ -212,11 +212,19 @@ class DrawGame:
         game_screen.blit(square, (BORDER_SIZE + move.end_col*SQUARE_SIZE, BORDER_SIZE + move.end_row*SQUARE_SIZE))
         game_screen.blit(square, (BORDER_SIZE + move.start_col*SQUARE_SIZE, BORDER_SIZE + move.start_row*SQUARE_SIZE))
 
-    def draw_game_manip(self, game_screen, game_manip, valid_moves, square_selected, is_black_down=False, p_theme_num=0, b_theme_num=0) -> None:
-        game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/zbackground_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
+    def draw_game_manip(self, game_screen, game_manip, valid_moves, 
+                        square_selected, gamemode, player_elo, 
+                        is_black_down=False, p_theme_num=0, b_theme_num=0) -> None:
+        game_screen.blit(pygame.transform.scale(pygame.image.load(f"images/{BOARD_THEMES_PACK[b_theme_num]}/background_colour.png"), (B_WIDTH, B_HEIGHT)), (0, 0))
         self.draw_game(game_screen, p_theme_num, b_theme_num)
         self.hightlighting_possible_moves(game_screen, game_manip, valid_moves, square_selected)
         self.draw_pieces(game_screen, game_manip.board, p_theme_num, b_theme_num)
+        if gamemode == "rating":
+            my_font = pygame.font.SysFont('Arial', int(LETTER_BORDER_SIZE/1.6))
+            text_surface = my_font.render(" Elo", True, "grey")
+            game_screen.blit(text_surface, (0, 0))
+            text_surface = my_font.render(str(player_elo), True, "grey")
+            game_screen.blit(text_surface, (0, int(LETTER_BORDER_SIZE/1.6)))
 
         # Drawing letters and numbers.
         if is_black_down:
@@ -277,7 +285,7 @@ class DrawGame:
     def draw_end_game_state(self, language, text_line, game_screen) -> None:
         endgame_text_size = int(GameObjects.SCREENSIZE[1] / 22)
 
-        if language.lang_name in ["ger", "fra"]:
+        if language.lang_name in ["ger", "fra", "spa"]:
             endgame_text_size = int(endgame_text_size / 1.4)
 
         font_type = pygame.font.SysFont("Arial", endgame_text_size, True, False)

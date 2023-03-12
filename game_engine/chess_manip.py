@@ -120,6 +120,32 @@ class LangSettings:
             self.surrender = "Êtes-vous sûr de vouloir vous rendre?"
             self.confirm = "Confirmer"
             self.promotion = "Choisissez la promotion de pion"
+        elif lang == "spa":
+            # Endgame.
+            self.w_win = "¡Jaque mate! Ganaron las blancas"
+            self.b_win = "¡Jaque mate! Ganaron las negras"
+            self.w_sur = "¡Las blancas se rindieron! Las negras ganaron"
+            self.b_sur = "¡Las negras se rindieron! Las blancas ganaron"
+            self.stale = "¡Estancamiento! Empate"
+            self.click = "Haga clic en cualquier botón para volver al menú principal"
+            # Main menu.
+            self.main = "Menú principal"
+            self.rating = "Jugar juego de clasificación"
+            self.p_white = "Juega como blanco"
+            self.p_black = "Juega como negro"
+            self.p_vs_f = "Juega contra un amigo"
+            self.custom_b = "Juega con un tablero personalizado"
+            self.exit = "Salir del juego"
+            # Settings.
+            self.settings = "Configuración"
+            self.idioma = "Idioma:"
+            self.difficulty = "Nivel de dificultad:"
+            self.board_theme = "Tema del tablero:"
+            self.piece_set = "Conjunto de piezas:"
+            # Else.
+            self.surrender = "¿Estás seguro de que quieres rendirte?"
+            self.confirm = "Confirmar"
+            self.promotion = "Elegir promoción de peón"
         elif lang == "chi":
             # Endgame.
             self.w_win = "将死！白方赢了"
@@ -173,6 +199,7 @@ class GameBoardState:
         self.checks = list()
         self.w_side_literal = "w"
         self.b_side_literal = "b"
+        self.debug_mode = GameObjects.DEBUG_MODE
 
     def make_move(self, move, screen=None, language=None, ai=None) -> str:
         self.board[move.start_row][move.start_col] = "--"
@@ -541,7 +568,8 @@ class GameBoardState:
                     if not self.square_under_attack(row, col - 1) and not self.square_under_attack(row, col - 2) and (self.board[0][7][1] == "R" or self.board[7][7][1] == "R"):
                         moves.append(Move((row, col), (row, col - 2), self.board, is_castle_move=True))
         except:
-            print("Error! (Castle Moves)")
+            if self.debug_mode:
+                print("Error! (Castle Moves)")
 
     def get_queenside_castle_moves(self, row, col, moves) -> None:
         try:
@@ -554,7 +582,8 @@ class GameBoardState:
                     if not self.square_under_attack(row, col + 1) and not self.square_under_attack(row, col + 2) and (self.board[0][0][1] == "R" or self.board[7][0][1] == "R"):
                         moves.append(Move((row, col), (row, col + 2), self.board, is_castle_move=True))
         except:
-            print("Error! (Castle Moves)")
+            if self.debug_mode:
+                print("Error! (Castle Moves)")
 
     def square_under_attack(self, row, col) -> bool:
         self.white_to_move = not self.white_to_move

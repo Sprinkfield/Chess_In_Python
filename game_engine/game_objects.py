@@ -5,7 +5,7 @@ import subprocess  # Is needed to get screen resolution (On Linux)
 
 class GameObjects:
     """This is one of the main classes where all useful information is stored."""
-    if platform.system().lower() != "linux":
+    if platform.system().lower().startswith("windows"):
         ### For Windows ###
         user32 = ctypes.windll.user32
         SCREENSIZE = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -15,7 +15,7 @@ class GameObjects:
         SCREENSIZE = tuple(map(int, output.split()[0].split(b'x')))
     
     # Constants
-    DEBUG_MODE = False
+    DEBUG_MODE = True
     BORDER_SIZE = int(SCREENSIZE[1] // 27)
     B_WIDTH = B_HEIGHT = int(SCREENSIZE[1]*0.7) + 4 * BORDER_SIZE
     DIMENSIONS = 8
@@ -27,9 +27,9 @@ class GameObjects:
     FONT_SIZE = int(SCREENSIZE[1] // 18)
     FONT_DELTA = int(FONT_SIZE / 3)
     GAP_IN_MAIN_MENU = int(FONT_SIZE * 2)
-    LANGUAGES = ["eng", "rus", "ger", "fra"]
+    LANGUAGES = ["eng", "rus", "ger", "fra", "spa"]
     PIECE_THEMES_PACK = ["default", "pixel"]  # You can add piece_custom inside this list.
-    BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r", "board_pixel"]  # You can add board_custom inside this list.
+    BOARD_THEMES_PACK = ["board_classic", "board_b_w", "board_r_w", "board_g_lg", "board_b_r", "board_pixel", "board_pixel2", "board_pixel3"]  # You can add board_custom inside this list.
 
     def get_boards() -> tuple:
         with open("game_engine/boards.txt", "r") as file:
