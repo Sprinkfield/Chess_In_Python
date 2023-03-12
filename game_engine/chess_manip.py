@@ -127,9 +127,9 @@ class LangSettings:
             self.w_sur = "¡Las blancas se rindieron! Las negras ganaron"
             self.b_sur = "¡Las negras se rindieron! Las blancas ganaron"
             self.stale = "¡Estancamiento! Empate"
-            self.click = "Haga clic en cualquier botón para volver al menú principal"
+            self.click = "Haga clic en cualquier botón para volver al Menú Principal"
             # Main menu.
-            self.main = "Menú principal"
+            self.main = "Menú Principal"
             self.rating = "Jugar juego de clasificación"
             self.p_white = "Juega como blanco"
             self.p_black = "Juega como negro"

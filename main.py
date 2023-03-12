@@ -143,6 +143,8 @@ def run_game() -> None:
     move_made = False  # Flag for the completed movement.
     gamemode = False
     move_counter = 0
+    undo_counter = 0
+    undo_limit = 3
     ai_move_as_black = False
     black_down_flag = False
     in_main_menu = True
@@ -190,10 +192,7 @@ def run_game() -> None:
                         elif TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 2*GAP_IN_MAIN_MENU + FONT_SIZE:
                             gamemode = "play_with_a_friend"
                         elif TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU <= location[1] <= TOP_IN_MAIN_MENU + 3*GAP_IN_MAIN_MENU + FONT_SIZE:
-                            if DEBUG_MODE:
-                                gamemode = "play_with_a_custom_board"
-                            else:
-                                sys.exit()
+                            gamemode = "play_with_a_custom_board" if DEBUG_MODE else sys.exit()
                         
                         if B_WIDTH - SQUARE_SIZE <= location[0] <= B_WIDTH and 0 <= location[1] <= SQUARE_SIZE:
                             lang_num = (lang_num + 1) % len(LANGUAGE_NAME)
@@ -377,6 +376,12 @@ def run_game() -> None:
                         game_manip.checkmate = True
                         surrendered = True
                         skip_frame = True
+                if single_event.key == pygame.K_z:
+                    if gamemode != "rating" and undo_counter < undo_limit:
+                        undo_counter += 1
+                        game_manip.undo_move()
+                        game_manip.undo_move()
+                        valid_moves = game_manip.get_valid_moves()
 
         if not is_now_human_turn and ai_move_as_black and move_counter <= 2:
             move = AI().opening_move(ai_move_as_black=True, game_manip=game_manip)
